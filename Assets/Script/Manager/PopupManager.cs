@@ -33,7 +33,7 @@ namespace PopupType
 public class PopupManager : MonoBehaviour
 {
     [SerializeField]
-    private Canvas popupCanvus = null;
+    Canvas popupCanvus = null;
 
     [SerializeField]
     Text titleText = null;
@@ -59,6 +59,9 @@ public class PopupManager : MonoBehaviour
     [SerializeField]
     Image bluePanel = null;
 
+    [SerializeField]
+    Sprite[] buttons = null;
+
     private void Start()
     {
         button1.onClick.AddListener(() => Hide());
@@ -68,6 +71,9 @@ public class PopupManager : MonoBehaviour
     {
         if (popupCanvus.gameObject.activeSelf) return;
 
+        popupGroup.GetComponent<Image>().rectTransform.sizeDelta = new Vector2(1864.8f, 0);
+
+        bluePanel.material.SetFloat("_Size", 0);
         popupGroup.alpha = 0;
         popupCanvus.gameObject.SetActive(true);
         titleText.text = title;
@@ -76,39 +82,43 @@ public class PopupManager : MonoBehaviour
         this.button1.onClick.RemoveAllListeners();
         this.button1.onClick.AddListener(button1.OnPress.Invoke);
         button1Text.text = button1.Text;
-        this.button1.GetComponent<Image>().color = button1.Type switch
+        this.button1.GetComponent<Image>().sprite = button1.Type switch
         {
-            ButtonType.Black => new Color(200f / 255f, 200f / 255f, 200f / 255f),
-            _ => new Color(255f / 255f, 255f / 255f, 255f / 255f)
+            ButtonType.Black => buttons[1],
+            _ => buttons[0]
         };
         button1Text.color = button1.Type switch
         {
             ButtonType.Black => new Color(255f / 255f, 255f / 255f, 255f / 255f),
-            _ => new Color(160f / 255f, 160f / 255f, 160f / 255f)
+            _ => new Color(56f / 255f, 62f / 255f, 105f / 255f)
         };
 
         this.button2.onClick.RemoveAllListeners();
         this.button2.onClick.AddListener(button2.OnPress.Invoke);
         button2Text.text = button2.Text;
-        this.button2.GetComponent<Image>().color = button2.Type switch
+        this.button2.GetComponent<Image>().sprite = button2.Type switch
         {
-            ButtonType.Black => new Color(200f / 255f, 200f / 255f, 200f / 255f),
-            _ => new Color(255f / 255f, 255f / 255f, 255f / 255f)
+            ButtonType.Black => buttons[1],
+            _ => buttons[0]
         };
         button2Text.color = button2.Type switch
         {
             ButtonType.Black => new Color(255f / 255f, 255f / 255f, 255f / 255f),
-            _ => new Color(160f / 255f, 160f / 255f, 160f / 255f)
+            _ => new Color(56f / 255f, 62f / 255f, 105f / 255f)
         };
+
+        popupGroup.GetComponent<Image>().rectTransform.DOSizeDelta(new Vector2(1864.8f, 1727.3f), .3f);
 
         GameManager.Instance.Tasks.Quit.AddTask(() =>
         {
+            bluePanel.material.DOFloat(0, "_Size", .3f);
             Sequence fadeoutSequence = DOTween.Sequence();
             fadeoutSequence.Append(popupGroup.DOFade(0, .5f));
             fadeoutSequence.AppendCallback(() => popupCanvus.gameObject.SetActive(false));
         });
         popupGroup.DOFade(1, .5f);
 
+        bluePanel.material.DOFloat(3, "_Size", .3f);
     }
 
     public void Hide()

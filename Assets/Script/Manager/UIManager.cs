@@ -21,7 +21,6 @@ public class UIManager : MonoBehaviour
     public void OpenShop()
     {
         GameManager.Instance.Tasks.Quit.AddTask(() => CloseShop());
-        starImage.GetComponent<Button>().interactable = false;
         shopUI.DOLocalMoveY(2200, .5f);
         starImage.DOLocalMoveY(520, .5f);
         shopButton.DOFade(0, .25f);
@@ -31,7 +30,6 @@ public class UIManager : MonoBehaviour
     public void CloseShop()
     {
         shopUI.DOLocalMoveY(0, .5f);
-        starImage.GetComponent<Button>().interactable = true;
         starImage.DOLocalMoveY(0, .5f);
         shopButton.DOFade(1, .5f);
         ArrowButtons.DOFade(1, .5f);
