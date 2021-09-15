@@ -22,21 +22,25 @@ public class UIManager : MonoBehaviour
     CanvasGroup ArrowButtons = null;
 
     private Vector2 originalScale;
+    private float shopOriginPos;
+    public bool isShopOpened = false;
 
     public void OpenShop()
     {
-        originalScale = star.localScale;
         GameManager.Instance.Tasks.Quit.AddTask(() => CloseShop());
-        shopUI.DOLocalMoveY(2200, .5f);
+        originalScale = star.localScale;
+        shopOriginPos = shopUI.anchoredPosition.y;
+        shopUI.DOAnchorPosY(Screen.height * 1.35f, .5f);
         starImage.DOLocalMoveY(520, .5f);
         star.DOScale(new Vector2(1f, 1f), .5f);
         shopButton.DOFade(0, .25f);
         ArrowButtons.DOFade(0, .25f);
+        isShopOpened = true;
     }
 
     public void CloseShop()
     {
-        shopUI.DOLocalMoveY(0, .5f);
+        shopUI.DOAnchorPosY(shopOriginPos, .5f);
         starImage.DOLocalMoveY(0, .5f);
         star.DOScale(originalScale, .5f);
         shopButton.DOFade(1, .5f);
@@ -45,6 +49,7 @@ public class UIManager : MonoBehaviour
 
     public void CloseShopButton()
     {
+        isShopOpened = false;
         GameManager.Instance.Tasks.Quit.BackButtonHandler();
     }
 }

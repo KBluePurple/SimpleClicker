@@ -11,44 +11,16 @@ public class GameManager : MonoSingleton<GameManager>
     Image StarImage = null;
 
     DataManager dataManager = null;
+    public DataManager Data { get { return dataManager ??= new DataManager(); } }
+
     TaskManager taskManager = null;
+    public TaskManager Tasks { get { return taskManager ??= GetComponent<TaskManager>(); } }
+
     PopupManager popupManager = null;
+    public PopupManager Popup { get { return popupManager ??= GetComponent<PopupManager>(); } }
+    
     UIManager uIManager = null;
-
-    public DataManager Data
-    {
-        get
-        {
-            if(dataManager == null) dataManager = new DataManager();
-            return dataManager;
-        }
-    }
-
-    public TaskManager Tasks
-    {
-        get
-        {
-            if (taskManager == null) taskManager = GetComponent<TaskManager>();
-            return taskManager;
-        }
-    }
-
-    public PopupManager Popup
-    {
-        get
-        {
-            if (popupManager == null) popupManager = GetComponent<PopupManager>();
-            return popupManager;
-        }
-    }
-    public UIManager UI
-    {
-        get
-        {
-            if (uIManager == null) uIManager = GetComponent<UIManager>();
-            return uIManager;
-        }
-    }
+    public UIManager UI { get { return uIManager ??= GetComponent<UIManager>(); } }
 
     void Start()
     {
@@ -60,9 +32,9 @@ public class GameManager : MonoSingleton<GameManager>
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            PopupButton button1 = new PopupButton("Å×½ºÆ® ¿ŞÂÊ", () => Popup.Hide());
-            PopupButton button2 = new PopupButton("Å×½ºÆ® ¿À¸¥ÂÊ", () => Popup.Hide());
-            Popup.Show("Å×½ºÆ® ÆË¾÷", "Å×½ºÆ® ÆË¾÷ ¼³¸í~~~", button1, button2);
+            PopupButton button1 = new PopupButton("í…ŒìŠ¤íŠ¸ ì™¼ìª½", () => Popup.Hide());
+            PopupButton button2 = new PopupButton("í…ŒìŠ¤íŠ¸ ì˜¤ë¥¸ìª½", () => Popup.Hide());
+            Popup.Show("í…ŒìŠ¤íŠ¸ íŒì—…", "í…ŒìŠ¤íŠ¸ íŒì—… ì„¤ëª…~~~", button1, button2);
         }
     }
 
@@ -83,9 +55,9 @@ public class GameManager : MonoSingleton<GameManager>
         }
         else
         {
-            PopupButton button1 = new PopupButton("³×...", () => QuitGame(true));
-            PopupButton button2 = new PopupButton("¾Æ´¢!", () => Popup.Hide(), ButtonType.Black);
-            Popup.Show("Á¤¸» ¶°³ª½Ç °Ç°¡¿ä...?", "¶°³ª½Å´Ù¸é ¸·Áö´Â ¾Ê°ÚÁö¸¸ Á¤¸» ¸¶À½ÀÌ ¾ÆÇÃ °Í °°³×¿ä...\n\nÇÏÁö¸¸ ¹¹ ¾îÂ¼°Ú³ª¿ä ¶°³ª½Å´Ù´Âµ¥...\n\nÀü ´ç½ÅÀÇ ¼±ÅÃÀ» Á¸ÁßÇØ¿ä...!", button1, button2);
+            PopupButton button1 = new PopupButton("ë„¤...", () => QuitGame(true));
+            PopupButton button2 = new PopupButton("ì•„ë‡¨!", () => Popup.Hide(), ButtonType.Black);
+            Popup.Show("ì •ë§ ë– ë‚˜ì‹¤ ê±´ê°€ìš”...?", "ë– ë‚˜ì‹ ë‹¤ë©´ ë§‰ì§€ëŠ” ì•Šê² ì§€ë§Œ ì •ë§ ë§ˆìŒì´ ì•„í”Œ ê²ƒ ê°™ë„¤ìš”...\n\ní•˜ì§€ë§Œ ë­ ì–´ì©Œê² ë‚˜ìš” ë– ë‚˜ì‹ ë‹¤ëŠ”ë°...\n\nì „ ë‹¹ì‹ ì˜ ì„ íƒì„ ì¡´ì¤‘í•´ìš”...!", button1, button2);
         }
     }
 }

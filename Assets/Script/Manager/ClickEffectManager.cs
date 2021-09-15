@@ -52,6 +52,14 @@ public class ClickEffectManager : MonoBehaviour
     public void OnClickStar()
     {
         ClickEffectObject(StarButtonEffect, 3);
+        if (!GameManager.Instance.UI.isShopOpened)
+        {
+            
+        }
+        else
+        {
+            GameManager.Instance.UI.CloseShopButton();
+        }
     }
 
     public void OnClickLeft()
@@ -66,7 +74,6 @@ public class ClickEffectManager : MonoBehaviour
 
     public void OnClickShop()
     {
-        ClickEffectObject(ShopButtonEffect, 2);
         GameManager.Instance.UI.OpenShop();
     }
 }
