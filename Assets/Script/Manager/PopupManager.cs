@@ -71,6 +71,14 @@ public class PopupManager : MonoBehaviour
     {
         if (popupCanvus.gameObject.activeSelf) return;
 
+        GameManager.Instance.Tasks.Quit.AddTask(() =>
+        {
+            bluePanel.material.DOFloat(0, "_Size", .3f);
+            Sequence fadeoutSequence = DOTween.Sequence();
+            fadeoutSequence.Append(popupGroup.DOFade(0, .5f));
+            fadeoutSequence.AppendCallback(() => popupCanvus.gameObject.SetActive(false));
+        });
+        
         popupGroup.GetComponent<Image>().rectTransform.sizeDelta = new Vector2(1864.8f, 0);
 
         bluePanel.material.SetFloat("_Size", 0);
@@ -108,14 +116,6 @@ public class PopupManager : MonoBehaviour
         };
 
         popupGroup.GetComponent<Image>().rectTransform.DOSizeDelta(new Vector2(1864.8f, 1727.3f), .3f);
-
-        GameManager.Instance.Tasks.Quit.AddTask(() =>
-        {
-            bluePanel.material.DOFloat(0, "_Size", .3f);
-            Sequence fadeoutSequence = DOTween.Sequence();
-            fadeoutSequence.Append(popupGroup.DOFade(0, .5f));
-            fadeoutSequence.AppendCallback(() => popupCanvus.gameObject.SetActive(false));
-        });
         popupGroup.DOFade(1, .5f);
 
         bluePanel.material.DOFloat(3, "_Size", .3f);

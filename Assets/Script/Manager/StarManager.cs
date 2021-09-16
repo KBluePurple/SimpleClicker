@@ -14,17 +14,17 @@ public class StarManager : MonoBehaviour
     RectTransform Orbit4 = null;
 
     private void Start() {
-        Orbit1.rotation = Quaternion.Euler(0, 0, 0);
-        Orbit2.rotation = Quaternion.Euler(0, 0, 15);
-        Orbit3.rotation = Quaternion.Euler(0, 0, 45);
-        Orbit4.rotation = Quaternion.Euler(0, 0, 60);
+        Orbit1.rotation = Quaternion.Euler(0, 0, Random.Range(0f, 360f));
+        Orbit2.rotation = Quaternion.Euler(0, 0, Random.Range(0f, 360f));
+        Orbit3.rotation = Quaternion.Euler(0, 0, Random.Range(0f, 360f));
+        Orbit4.rotation = Quaternion.Euler(0, 0, Random.Range(0f, 360f));
     }
 
     private void FixedUpdate() {
-        Orbit1.Rotate(new Vector3(0, 0, 0.4f));
-        Orbit2.Rotate(new Vector3(0, 0, 0.3f));
-        Orbit3.Rotate(new Vector3(0, 0, 0.2f));
-        Orbit4.Rotate(new Vector3(0, 0, 0.1f));
+        Orbit1.Rotate(new Vector3(0, 0, 1.4f));
+        Orbit2.Rotate(new Vector3(0, 0, 1.3f));
+        Orbit3.Rotate(new Vector3(0, 0, 1.2f));
+        Orbit4.Rotate(new Vector3(0, 0, 1.1f));
     }
 
     public void AddStar()

@@ -12,15 +12,6 @@ public class ClickEffectManager : MonoBehaviour
     [SerializeField]
     Transform StarButtonEffect = null;
 
-    [SerializeField]
-    Transform LeftButtonEffect = null;
-
-    [SerializeField]
-    Transform RightButtonEffect = null;
-
-    [SerializeField]
-    Transform ShopButtonEffect = null;
-
     PoolManager clickEffectPool = null;
 
     private void Start()
@@ -36,7 +27,7 @@ public class ClickEffectManager : MonoBehaviour
         EffectPos.z = 100;
         EffectObject.transform.position = EffectPos;
         EffectObject.transform.localScale = new Vector2(0f, 0f);
-        EffectObject.GetComponent<Image>().color = new Color(1, 1, 1, .5f);
+        EffectObject.GetComponent<Image>().color = new Color(1, 1, 1, .3f);
         EffectObject.SetActive(true);
         Sequence effectSequence = DOTween.Sequence();
         effectSequence.Append(EffectObject.transform.DOScale(new Vector2(size, size), 1f));
@@ -54,22 +45,12 @@ public class ClickEffectManager : MonoBehaviour
         ClickEffectObject(StarButtonEffect, 3);
         if (!GameManager.Instance.UI.isShopOpened)
         {
-            
+            GameManager.Instance.UI.GetMoneyEffect(100, Camera.main.ScreenToWorldPoint(Input.mousePosition));
         }
         else
         {
             GameManager.Instance.UI.CloseShopButton();
         }
-    }
-
-    public void OnClickLeft()
-    {
-        ClickEffectObject(LeftButtonEffect, 3);
-    }
-
-    public void OnClickRight()
-    {
-        ClickEffectObject(RightButtonEffect, 3);
     }
 
     public void OnClickShop()

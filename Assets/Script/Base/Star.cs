@@ -1,9 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 [System.Serializable]
 public class Star
 {
-    
+    public List<SubStar> SubStars;
+    public int Value;
+    public int UpgradeCount;
 }
