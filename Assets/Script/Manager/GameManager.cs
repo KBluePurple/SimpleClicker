@@ -21,6 +21,9 @@ public class GameManager : MonoSingleton<GameManager>
     
     UIManager uIManager = null;
     public UIManager UI { get { return uIManager ??= GetComponent<UIManager>(); } }
+    
+    StarManager starManager = null;
+    public StarManager Star { get { return starManager ??= GetComponent<StarManager>(); } }
 
     void Start()
     {
@@ -32,9 +35,10 @@ public class GameManager : MonoSingleton<GameManager>
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            PopupButton button1 = new PopupButton("테스트 왼쪽", () => Popup.Hide());
-            PopupButton button2 = new PopupButton("테스트 오른쪽", () => Popup.Hide());
-            Popup.Show("테스트 팝업", "테스트 팝업 설명~~~", button1, button2);
+            Star.AddOrbit();
+            // PopupButton button1 = new PopupButton("테스트 왼쪽", () => Popup.Hide());
+            // PopupButton button2 = new PopupButton("테스트 오른쪽", () => Popup.Hide());
+            // Popup.Show("테스트 팝업", "테스트 팝업 설명~~~", button1, button2);
         }
     }
 

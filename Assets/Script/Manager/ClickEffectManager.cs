@@ -26,12 +26,10 @@ public class ClickEffectManager : MonoBehaviour
         var EffectPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         EffectPos.z = 100;
         EffectObject.transform.position = EffectPos;
-        EffectObject.transform.localScale = new Vector2(0f, 0f);
-        EffectObject.GetComponent<Image>().color = new Color(1, 1, 1, .3f);
         EffectObject.SetActive(true);
         Sequence effectSequence = DOTween.Sequence();
-        effectSequence.Append(EffectObject.transform.DOScale(new Vector2(size, size), 1f));
-        effectSequence.Join(EffectObject.GetComponent<Image>().DOFade(0f, 1f));
+        effectSequence.Append(EffectObject.transform.DOScale(new Vector2(size, size), 1f).From(Vector2.zero));
+        effectSequence.Join(EffectObject.GetComponent<Image>().DOFade(0f, 1f).From(.3f));
         effectSequence.AppendCallback(() =>
         {
             clickEffectPool.PutObject(EffectObject);
@@ -40,12 +38,13 @@ public class ClickEffectManager : MonoBehaviour
         return EffectObject;
     }
 
+    int a = 1;
     public void OnClickStar()
     {
         ClickEffectObject(StarButtonEffect, 3);
         if (!GameManager.Instance.UI.isShopOpened)
         {
-            GameManager.Instance.UI.GetMoneyEffect(100, Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            GameManager.Instance.UI.GetMoneyEffect(a++, Camera.main.ScreenToWorldPoint(Input.mousePosition));
         }
         else
         {

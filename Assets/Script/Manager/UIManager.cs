@@ -16,7 +16,7 @@ public class UIManager : MonoBehaviour
     Image shopButton = null;
 
     [SerializeField]
-    Transform star = null;
+    public Transform star = null;
 
     [SerializeField]
     RectTransform starImage = null;
@@ -77,6 +77,7 @@ public class UIManager : MonoBehaviour
     public void GetMoneyEffect(int value, Vector3 startPos)
     {
         var EffectObject = getMoneyEffectPool.GetObject();
+        EffectObject.GetComponent<Text>().text = $"+ {value} SE";
         EffectObject.transform.SetParent(getEffect);
         EffectObject.transform.localScale = Vector3.one;
         EffectObject.GetComponent<Text>().color += new Color(0, 0, 1);
@@ -95,6 +96,6 @@ public class UIManager : MonoBehaviour
 
     public void UpdateUI()
     {
-
+        
     }
 }

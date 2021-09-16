@@ -1,34 +1,51 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using DG.Tweening;
 
 public class StarManager : MonoBehaviour
 {
     [SerializeField]
-    RectTransform Orbit1 = null;
-    [SerializeField]
-    RectTransform Orbit2 = null;
-    [SerializeField]
-    RectTransform Orbit3 = null;
-    [SerializeField]
-    RectTransform Orbit4 = null;
+    Orbit[] orbits = null;
+
+    List<Vector3> starScales = new List<Vector3>();
+
+    private int Count = 0;
 
     private void Start() {
-        Orbit1.rotation = Quaternion.Euler(0, 0, Random.Range(0f, 360f));
-        Orbit2.rotation = Quaternion.Euler(0, 0, Random.Range(0f, 360f));
-        Orbit3.rotation = Quaternion.Euler(0, 0, Random.Range(0f, 360f));
-        Orbit4.rotation = Quaternion.Euler(0, 0, Random.Range(0f, 360f));
+        foreach (var orbit in orbits)
+        {
+            orbit.transform.Rotate(new Vector3(0, 0, Random.Range(0f, 360f)));
+        }
+
+        starScales.Add(new Vector3(1.1f, 1.1f, 1.1f));
+        starScales.Add(new Vector3(1.0f, 1.0f, 1.0f));
+        starScales.Add(new Vector3(0.9f, 0.9f, 0.9f));
+        starScales.Add(new Vector3(0.7f, 0.7f, 0.7f));
     }
 
     private void FixedUpdate() {
-        Orbit1.Rotate(new Vector3(0, 0, 1.4f));
-        Orbit2.Rotate(new Vector3(0, 0, 1.3f));
-        Orbit3.Rotate(new Vector3(0, 0, 1.2f));
-        Orbit4.Rotate(new Vector3(0, 0, 1.1f));
+        if (orbits[0].Enabled)
+            orbits[0].transform.Rotate(new Vector3(0, 0, 1.4f));
+        if (orbits[1].Enabled)
+            orbits[1].transform.Rotate(new Vector3(0, 0, 1.3f));
+        if (orbits[2].Enabled)
+            orbits[2].transform.Rotate(new Vector3(0, 0, 1.2f));
+        if (orbits[3].Enabled)
+            orbits[3].transform.Rotate(new Vector3(0, 0, 1.1f));
     }
 
-    public void AddStar()
+    public void AddOrbit()
     {
-
+        var Star = GameManager.Instance.UI.star;
+        orbits[Count].gameObject.SetActive(true);
+        orbits[Count].Enabled = true;
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(orbits[Count].GetComponent<Image>().DOFade(1, 1).From(0));
+        sequence.Join(Star.DOScale(starScales[Count], 1f));
+        sequence.Join(orbits[Count].SubStar[0].DOAnchorPosX(-6f, 3f).From(new Vector2(1000, 0)));
+        sequence.Play();
+        Count++;
     }
 }
