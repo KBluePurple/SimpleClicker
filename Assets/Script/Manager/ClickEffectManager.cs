@@ -23,7 +23,7 @@ public class ClickEffectManager : MonoBehaviour
     {
         var EffectObject = clickEffectPool.GetObject();
         EffectObject.transform.SetParent(parant);
-        var EffectPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        var EffectPos = Camera.main.ScreenToWorldPoint(GameManager.Instance.TouchPoint());
         EffectPos.z = 100;
         EffectObject.transform.position = EffectPos;
         EffectObject.SetActive(true);
@@ -44,7 +44,10 @@ public class ClickEffectManager : MonoBehaviour
         ClickEffectObject(StarButtonEffect, 3);
         if (!GameManager.Instance.UI.isShopOpened)
         {
-            GameManager.Instance.UI.GetMoneyEffect(a++, Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            for (var i = 0; i < 1; i++)
+            {
+                GameManager.Instance.UI.GetMoneyEffect(a++, Camera.main.ScreenToWorldPoint(GameManager.Instance.TouchPoint()));
+            }
         }
         else
         {

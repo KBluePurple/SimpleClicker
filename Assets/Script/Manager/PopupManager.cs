@@ -33,7 +33,7 @@ namespace PopupType
 public class PopupManager : MonoBehaviour
 {
     [SerializeField]
-    Canvas popupCanvus = null;
+    Canvas popupCanvas = null;
 
     [SerializeField]
     Text titleText = null;
@@ -64,26 +64,28 @@ public class PopupManager : MonoBehaviour
 
     private void Start()
     {
+        popupCanvas.gameObject.SetActive(false);
         button1.onClick.AddListener(() => Hide());
     }
 
     public void Show(string title, string description, PopupButton button1, PopupButton button2)
     {
-        if (popupCanvus.gameObject.activeSelf) return;
+        if (popupCanvas.gameObject.activeSelf) return;
 
         GameManager.Instance.Tasks.Quit.AddTask(() =>
         {
             bluePanel.material.DOFloat(0, "_Size", .3f);
             Sequence fadeoutSequence = DOTween.Sequence();
             fadeoutSequence.Append(popupGroup.DOFade(0, .5f));
-            fadeoutSequence.AppendCallback(() => popupCanvus.gameObject.SetActive(false));
+            fadeoutSequence.AppendCallback(() => popupCanvas.gameObject.SetActive(false));
+            bluePanel.DOFade(0, .5f);
         });
         
         popupGroup.GetComponent<Image>().rectTransform.sizeDelta = new Vector2(1864.8f, 0);
 
         bluePanel.material.SetFloat("_Size", 0);
         popupGroup.alpha = 0;
-        popupCanvus.gameObject.SetActive(true);
+        popupCanvas.gameObject.SetActive(true);
         titleText.text = title;
         descriptionText.text = description;
 
@@ -118,7 +120,7 @@ public class PopupManager : MonoBehaviour
         popupGroup.GetComponent<Image>().rectTransform.DOSizeDelta(new Vector2(1864.8f, 1727.3f), .3f);
         popupGroup.DOFade(1, .5f);
 
-        bluePanel.material.DOFloat(3, "_Size", .3f);
+        bluePanel.DOFade(.3f, .5f);
     }
 
     public void Hide()

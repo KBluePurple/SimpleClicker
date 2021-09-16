@@ -38,10 +38,15 @@ public class StarManager : MonoBehaviour
 
     public void AddOrbit()
     {
+        Sequence sequence = DOTween.Sequence();
+        if (GameManager.Instance.UI.isShopOpened)
+        {
+            sequence.AppendInterval(.5f);
+            GameManager.Instance.UI.CloseShopButton();
+        }
         var Star = GameManager.Instance.UI.star;
         orbits[Count].gameObject.SetActive(true);
         orbits[Count].Enabled = true;
-        Sequence sequence = DOTween.Sequence();
         sequence.Append(orbits[Count].GetComponent<Image>().DOFade(1, 1).From(0));
         sequence.Join(Star.DOScale(starScales[Count], 1f));
         sequence.Join(orbits[Count].SubStar[0].DOAnchorPosX(-6f, 3f).From(new Vector2(1000, 0)));

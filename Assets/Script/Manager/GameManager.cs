@@ -5,6 +5,8 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
 
+// TODO 게임 빌드 시 PopupCanvas Active 켜주기
+
 public class GameManager : MonoSingleton<GameManager>
 {
     [SerializeField]
@@ -45,6 +47,18 @@ public class GameManager : MonoSingleton<GameManager>
     public GameObject InstantiateObj(GameObject gameObject)
     {
         return Instantiate(gameObject);
+    }
+
+    public Vector3 TouchPoint()
+    {
+        if (Input.touches.Length > 0)
+        {
+            return Input.touches[0].position;
+        }
+        else
+        {
+            return Input.mousePosition;
+        }
     }
 
     public void QuitGame(bool isForce = false)
