@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
+using UnityEngine.Experimental.Rendering.Universal;
 
 // TODO 게임 빌드 시 PopupCanvas Active 켜주기
 
@@ -35,12 +36,22 @@ public class GameManager : MonoSingleton<GameManager>
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            foreach (Orbit orbit in Star.Orbits)
+            {
+                if (orbit.Enabled)
+                    orbit.AddSubStar();
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Z))
         {
             Star.AddOrbit();
-            // PopupButton button1 = new PopupButton("테스트 왼쪽", () => Popup.Hide());
-            // PopupButton button2 = new PopupButton("테스트 오른쪽", () => Popup.Hide());
-            // Popup.Show("테스트 팝업", "테스트 팝업 설명~~~", button1, button2);
+        }
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            var StarLight = UI.starImage.GetComponent<Light2D>();
+            DOTween.To(() => StarLight.intensity, x => StarLight.intensity = x, 0f, .5f).From(1f);
         }
     }
 

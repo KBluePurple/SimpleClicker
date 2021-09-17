@@ -15,7 +15,7 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
         {
             if (shuttingDown)
             {
-                Debug.LogWarning(string.Format("[MonoSingleton] ÀÎ½ºÅÏ½º({0})Àº(´Â) ÀÌ¹Ì »èÁ¦µÇ¾ú½À´Ï´Ù. nullÀ» ¹İÈ¯ÇÕ´Ï´Ù.", typeof(T)));
+                Debug.LogWarning(string.Format("[MonoSingleton] ì¸ìŠ¤í„´ìŠ¤({0})ì€(ëŠ”) ì´ë¯¸ ì‚­ì œë˜ì—ˆìŠµë‹ˆë‹¤. nullì„ ë°˜í™˜í•©ë‹ˆë‹¤.", typeof(T)));
                 return null;
             }
 

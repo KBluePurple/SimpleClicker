@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
+using UnityEngine.Experimental.Rendering.Universal;
 
 public class UIManager : MonoBehaviour
 {
@@ -19,7 +20,7 @@ public class UIManager : MonoBehaviour
     public Transform star = null;
 
     [SerializeField]
-    RectTransform starImage = null;
+    public RectTransform starImage = null;
 
     [SerializeField]
     Image shopPanel = null;
