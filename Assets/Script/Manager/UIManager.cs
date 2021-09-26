@@ -60,7 +60,6 @@ public class UIManager : MonoBehaviour
     public void OpenShop()
     {
         originalScale = star.localScale;
-        isShopOpened = true;
         Sequence sequence = DOTween.Sequence();
         sequence.Join(starImage.DOLocalMoveY(-200, .5f));
         sequence.Join(OrbitsRTF.DOLocalMoveY(-200, .5f));
@@ -69,22 +68,23 @@ public class UIManager : MonoBehaviour
         sequence.Join(star.DOScale(new Vector2(1f, 1f), .5f));
         sequence.Join(shopUI.DOAnchorPosY(UICanvas.GetComponent<RectTransform>().sizeDelta.y * 1.4f, .5f));
         sequence.Join(shopButton.DOFade(0, .25f));
-        sequence.Append(OrbitsRTF.DOLocalMove(Vector3.zero, .5f));
+        sequence.Join(OrbitsRTF.DOLocalMove(Vector3.zero, .5f));
+        sequence.AppendCallback(() => isShopOpened = true);
         GameManager.Instance.Tasks.Quit.AddTask(() => CloseShop());
     }
 
     public void CloseShop()
     {
-        shopUI.DOAnchorPosY(shopOriginPos, .5f);
-        starImage.DOLocalMoveY(0, .5f);
-        star.DOScale(originalScale, .5f);
-        shopButton.DOFade(1, .5f);
         isShopOpened = false;
+        Sequence sequence =  DOTween.Sequence();
+        sequence.Join(shopUI.DOAnchorPosY(shopOriginPos, .5f));
+        sequence.Join(starImage.DOLocalMoveY(0, .5f));
+        sequence.Join(star.DOScale(originalScale, .5f));
+        sequence.Join(shopButton.DOFade(1, .5f));
     }
 
     public void CloseShopButton()
     {
-        isShopOpened = false;
         GameManager.Instance.Tasks.Quit.BackButtonHandler();
     }
 

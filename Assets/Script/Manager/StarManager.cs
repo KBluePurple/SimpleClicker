@@ -26,16 +26,16 @@ public class StarManager : MonoBehaviour
         AddOrbit();
     }
 
-    private void FixedUpdate() {
-        if (Orbits[0].Enabled)
-            Orbits[0].transform.Rotate(new Vector3(0, 0, 1.4f));
-        if (Orbits[1].Enabled)
-            Orbits[1].transform.Rotate(new Vector3(0, 0, 1.3f));
-        if (Orbits[2].Enabled)
-            Orbits[2].transform.Rotate(new Vector3(0, 0, 1.2f));
-        if (Orbits[3].Enabled)
-            Orbits[3].transform.Rotate(new Vector3(0, 0, 1.1f));
-    }
+    // private void FixedUpdate() {
+    //     if (Orbits[0].Enabled)
+    //         Orbits[0].transform.Rotate(new Vector3(0, 0, 1.4f));
+    //     if (Orbits[1].Enabled)
+    //         Orbits[1].transform.Rotate(new Vector3(0, 0, 1.3f));
+    //     if (Orbits[2].Enabled)
+    //         Orbits[2].transform.Rotate(new Vector3(0, 0, 1.2f));
+    //     if (Orbits[3].Enabled)
+    //         Orbits[3].transform.Rotate(new Vector3(0, 0, 1.1f));
+    // }
 
     public void AddOrbit()
     {

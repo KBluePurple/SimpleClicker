@@ -6,8 +6,6 @@ using DG.Tweening;
 using UnityEngine.UI;
 using UnityEngine.Experimental.Rendering.Universal;
 
-// TODO 게임 빌드 시 PopupCanvas Active 켜주기
-
 public class GameManager : MonoSingleton<GameManager>
 {
     [SerializeField]

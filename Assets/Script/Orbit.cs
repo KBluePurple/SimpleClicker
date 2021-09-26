@@ -15,9 +15,10 @@ public class Orbit : MonoBehaviour {
     
     public bool Enabled = false;
 
+    public int SE = 100;
+
     public void AddSubStar()
     {
-        // TODO 그 위성 추가하는거
         SubStars.Add(Instantiate(SubStars[0], transform));
         for (int i = 0; i < SubStars.Count; i++)
         {
@@ -38,8 +39,44 @@ public class Orbit : MonoBehaviour {
         }
     }
 
+    int lastSubStarIndex = 0; // 마지막으로 확인 한 위성의 순번
+    bool rotated = false;
     private void FixedUpdate() {
-        // TODO 막 막 어 그 뭐냐 닿으면 돈 뿌려
-        // TODO 세이브에서 값 읽어서 회전시키기
+        if (Enabled)
+        {
+            float zAngle = transform.rotation.eulerAngles.z; // 
+
+            float slicedAngle = 360f/SubStars.Count; // 각도, 360/n, n=위성의 수=SubStars.Count
+            slicedAngle = slicedAngle >= 360f ? 0 : slicedAngle; // 각도 360도 초과 시 0으로 초기화
+            
+            float endAngle = (slicedAngle * lastSubStarIndex) + 90; // slicedAngle을 lastSubStarIndex으로 곱하여 확인 할 각도, +90도를 초기 각도로 한다
+            endAngle = endAngle >= 360 ? endAngle - 360 : endAngle; // 90~360, 0~90 각도 360도 초과 시 초과한 값으로 변경하여 각도 오버플로우 방지
+
+            Debug.Log(zAngle + "||" + endAngle + "||" + rotated);
+            if (zAngle > endAngle)
+            {
+                if (!(lastSubStarIndex == 0 && !rotated))
+                {
+                    rotated = false;
+
+                    RectTransform SubStar = SubStars[0];
+                    foreach (var subStar in SubStars)
+                    {
+                        if (subStar.transform.position.y > SubStar.transform.position.y)
+                        {
+                            SubStar = subStar;
+                        }
+                    }
+
+                    GameManager.Instance.UI.GetMoneyEffect(SE, SubStar.transform.position);
+                    lastSubStarIndex++;
+                    if (lastSubStarIndex >= SubStars.Count)
+                        lastSubStarIndex = 0;
+                }
+            }
+            if (zAngle + Speed > 360)
+                rotated = true;
+            transform.Rotate(new Vector3(0, 0, Speed));
+        }
     }
 }
