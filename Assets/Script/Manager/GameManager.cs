@@ -12,7 +12,7 @@ public class GameManager : MonoSingleton<GameManager>
     Image StarImage = null;
 
     DataManager dataManager = null;
-    public DataManager Data { get { return dataManager ??= new DataManager(); } }
+    public DataManager Data { get { return dataManager ??= GetComponent<DataManager>(); } }
 
     TaskManager taskManager = null;
     public TaskManager Tasks { get { return taskManager ??= GetComponent<TaskManager>(); } }

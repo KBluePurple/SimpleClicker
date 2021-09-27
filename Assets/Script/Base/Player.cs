@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [System.Serializable]
-public class Player : MonoBehaviour 
+public class Player 
 {
     public Star PlayerStar;
     public int StarEnergy;

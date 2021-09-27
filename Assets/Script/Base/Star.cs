@@ -4,6 +4,6 @@ using System.Collections.Generic;
 public class Star
 {
     public List<SubStar> SubStars;
-    public int Value;
+    public int EnergyPerTouch;
     public int UpgradeCount;
 }

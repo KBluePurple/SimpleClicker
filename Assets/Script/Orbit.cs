@@ -44,20 +44,21 @@ public class Orbit : MonoBehaviour {
     private void FixedUpdate() {
         if (Enabled)
         {
-            float zAngle = transform.rotation.eulerAngles.z; // 
+            float zAngle = transform.rotation.eulerAngles.z - 90;
+            zAngle = zAngle < 0 ? zAngle + 360 : zAngle;
 
             float slicedAngle = 360f/SubStars.Count; // 각도, 360/n, n=위성의 수=SubStars.Count
             slicedAngle = slicedAngle >= 360f ? 0 : slicedAngle; // 각도 360도 초과 시 0으로 초기화
             
-            float endAngle = (slicedAngle * lastSubStarIndex) + 90; // slicedAngle을 lastSubStarIndex으로 곱하여 확인 할 각도, +90도를 초기 각도로 한다
-            endAngle = endAngle >= 360 ? endAngle - 360 : endAngle; // 90~360, 0~90 각도 360도 초과 시 초과한 값으로 변경하여 각도 오버플로우 방지
+            float endAngle = (slicedAngle * lastSubStarIndex); // slicedAngle을 lastSubStarIndex으로 곱하여 확인 할 각도, +90도를 초기 각도로 한다
 
-            Debug.Log(zAngle + "||" + endAngle + "||" + rotated);
+            
             if (zAngle > endAngle)
             {
                 if (!(lastSubStarIndex == 0 && !rotated))
                 {
-                    rotated = false;
+                    if (lastSubStarIndex == 0)
+                        rotated = false;    
 
                     RectTransform SubStar = SubStars[0];
                     foreach (var subStar in SubStars)
@@ -68,14 +69,16 @@ public class Orbit : MonoBehaviour {
                         }
                     }
 
-                    GameManager.Instance.UI.GetMoneyEffect(SE, SubStar.transform.position);
+                    GameManager.Instance.UI.GetMoneyEffect(SE, SubStar.transform.position, true);
                     lastSubStarIndex++;
                     if (lastSubStarIndex >= SubStars.Count)
                         lastSubStarIndex = 0;
                 }
             }
+
             if (zAngle + Speed > 360)
                 rotated = true;
+
             transform.Rotate(new Vector3(0, 0, Speed));
         }
     }

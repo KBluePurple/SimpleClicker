@@ -32,7 +32,7 @@ public class UIManager : MonoBehaviour
     GameObject getEffectPrefab = null;
 
     [SerializeField]
-    Transform MoneyTextPos = null;
+    Text MoneyText = null;
     
     [SerializeField]
     RectTransform SETextPos = null;
@@ -42,12 +42,23 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     RectTransform OrbitsRTF = null;
+
+    [SerializeField]
+    Canvas StarCanvas = null;
+
+    [SerializeField]
+    Canvas OrbitCanvas = null;
     
     private int MoneyStack = 0;
     private Vector2 originalScale;
     private float shopOriginPos;
     public bool isShopOpened = false;
     PoolManager getMoneyEffectPool = null;
+
+    public float ShakeStrength = 0;
+    public float ShakeAmount;
+    float ShakeTime;
+    Vector3 initialPosition;
 
     private void Start() {
         getMoneyEffectPool = new PoolManager(getEffectPrefab);
@@ -56,7 +67,15 @@ public class UIManager : MonoBehaviour
         shopPanelRT.anchoredPosition -= new Vector2(0, temp / 2);
         shopOriginPos = shopUI.anchoredPosition.y;
         shopPanelRT.sizeDelta = new Vector2(shopPanelRT.sizeDelta.x, UICanvas.GetComponent<RectTransform>().sizeDelta.y);
+        UpdateUI();
     }
+
+    private void Update() {
+        transform.position = (Vector3)(Random.insideUnitCircle * ShakeStrength);
+        if (ShakeStrength > 0)
+            Mathf.Clamp(ShakeStrength -= Time.deltaTime, 0, 1);
+    }
+
     public void OpenShop()
     {
         originalScale = star.localScale;
@@ -108,10 +127,12 @@ public class UIManager : MonoBehaviour
     private void hideStackText()
     {
         // TODO 나중에 시간 되면 펑 하면서 들어가는거 만들기
-        //MoneyStackText.GetComponent<RectTransform>().DOAnchorPosY(-175, 0.5f);
-        MoneyStackText.DOFade(0f, .5f).From(1);
-        SETextPos.DOAnchorPosY(0, .5f);
+        GameManager.Instance.Data.Player.StarEnergy += MoneyStack;
+        UpdateUI();
         MoneyStack = 0;
+        Sequence sequence = DOTween.Sequence();
+        sequence.Join(MoneyStackText.DOFade(0f, .5f).From(1));
+        sequence.Join(SETextPos.DOAnchorPosY(0, .5f));
     }
 
     private IEnumerator StackTimerLoop()
@@ -126,10 +147,10 @@ public class UIManager : MonoBehaviour
         hideStackText();
     }
 
-    public void GetMoneyEffect(int value, Vector3 startPos)
+    public void GetMoneyEffect(int value, Vector3 startPos, bool isDirect = false)
     {
+        ShakeStrength = 10;
         var EffectObject = getMoneyEffectPool.GetObject();
-        // EffectObject.GetComponent<Text>().text = $"+ {value} SE";
         EffectObject.transform.SetParent(getEffect);
         EffectObject.transform.localScale = Vector3.one;
         EffectObject.GetComponent<Image>().color += new Color(0, 0, 1);
@@ -139,18 +160,31 @@ public class UIManager : MonoBehaviour
         Sequence sequence = DOTween.Sequence();
         var RandomPos = new Vector3(EffectPos.x + Random.Range(-.5f, .5f), EffectPos.y + Random.Range(-.5f, .5f), 100);
         sequence.Append(EffectObject.transform.DOMove(RandomPos, .5f));
-        sequence.Append(EffectObject.transform.DOMove(MoneyTextPos.position, .5f));
-        sequence.Join(EffectObject.GetComponent<Image>().DOFade(0, .5f));
-        sequence.AppendCallback(() => {
-            getMoneyEffectPool.PutObject(EffectObject);
-            showStackText();
-            MoneyStack += value;
-            UpdateUI();
-        });
+        sequence.Append(EffectObject.GetComponent<Image>().DOFade(0, .5f));
+        if (!isDirect)
+        {
+            sequence.Join(EffectObject.transform.DOMove(MoneyStackText.transform.position, .5f));
+            sequence.AppendCallback(() => {
+                getMoneyEffectPool.PutObject(EffectObject);
+                showStackText();
+                MoneyStack += value;
+                UpdateUI();
+            });
+        }
+        else
+        {
+            sequence.Join(EffectObject.transform.DOMove(MoneyText.transform.position, .5f));
+            sequence.AppendCallback(() => {
+                GameManager.Instance.Data.Player.StarEnergy += value;
+                UpdateUI();
+            });
+        }
     }
 
     public void UpdateUI()
     {
-        MoneyStackText.text = $"+ {MoneyStack} SE";
+        MoneyStackText.text = $"+ {MoneyStack.ToString("N0")} SE";
+        MoneyText.GetComponent<NumberCounter>().Value = GameManager.Instance.Data.Player.StarEnergy;
+        Debug.Log(GameManager.Instance.Data.Player.StarEnergy);
     }
 }
