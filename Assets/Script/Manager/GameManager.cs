@@ -48,8 +48,7 @@ public class GameManager : MonoSingleton<GameManager>
         }
         if (Input.GetKeyDown(KeyCode.C))
         {
-            var StarLight = UI.starImage.GetComponent<Light2D>();
-            DOTween.To(() => StarLight.intensity, x => StarLight.intensity = x, 0f, .5f).From(1f);
+            UI.VibrateForTime(1f);
         }
     }
 

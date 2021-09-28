@@ -26,6 +26,9 @@ public class UIManager : MonoBehaviour
     Image shopPanel = null;
 
     [SerializeField]
+    Image starLine = null;
+
+    [SerializeField]
     Transform getEffect = null;
 
     [SerializeField]
@@ -55,12 +58,13 @@ public class UIManager : MonoBehaviour
     public bool isShopOpened = false;
     PoolManager getMoneyEffectPool = null;
 
-    public float ShakeStrength = 0;
-    public float ShakeAmount;
-    float ShakeTime;
-    Vector3 initialPosition;
+    public float ShakeStrength = 1;
+    public float ShakeAmount = 1;
+    float ShakeTime = 0;
+    Vector2 initialPosition = new Vector2(0, 0);
 
-    private void Start() {
+    private void Start()
+    {
         getMoneyEffectPool = new PoolManager(getEffectPrefab);
         RectTransform shopPanelRT = shopPanel.GetComponent<RectTransform>();
         float temp = UICanvas.GetComponent<RectTransform>().sizeDelta.y - shopPanelRT.sizeDelta.y;
@@ -70,10 +74,31 @@ public class UIManager : MonoBehaviour
         UpdateUI();
     }
 
-    private void Update() {
-        transform.position = (Vector3)(Random.insideUnitCircle * ShakeStrength);
-        if (ShakeStrength > 0)
-            Mathf.Clamp(ShakeStrength -= Time.deltaTime, 0, 1);
+    private void Update()
+    {
+        if (ShakeTime > 0)
+        {
+            var randomShake = Random.insideUnitCircle * ShakeTime;
+            StarCanvas.transform.position = randomShake;
+            OrbitCanvas.transform.position = randomShake;
+            ShakeTime -= Time.deltaTime;
+        }
+        else
+        {
+            ShakeTime = 0.0f;
+            StarCanvas.transform.position = initialPosition;
+            OrbitCanvas.transform.position = initialPosition;
+            StarCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+            OrbitCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+        }
+    }
+
+    public void VibrateForTime(float time)
+    {
+        ShakeTime = time;
+        Vibration.Vibrate((long)(time * 1000));
+        StarCanvas.renderMode = RenderMode.WorldSpace;
+        OrbitCanvas.renderMode = RenderMode.WorldSpace;
     }
 
     public void OpenShop()
@@ -87,6 +112,7 @@ public class UIManager : MonoBehaviour
         sequence.Join(star.DOScale(new Vector2(1f, 1f), .5f));
         sequence.Join(shopUI.DOAnchorPosY(UICanvas.GetComponent<RectTransform>().sizeDelta.y * 1.4f, .5f));
         sequence.Join(shopButton.DOFade(0, .25f));
+        sequence.Join(starLine.DOFade(0, .25f));
         sequence.Join(OrbitsRTF.DOLocalMove(Vector3.zero, .5f));
         sequence.AppendCallback(() => isShopOpened = true);
         GameManager.Instance.Tasks.Quit.AddTask(() => CloseShop());
@@ -100,6 +126,7 @@ public class UIManager : MonoBehaviour
         sequence.Join(starImage.DOLocalMoveY(0, .5f));
         sequence.Join(star.DOScale(originalScale, .5f));
         sequence.Join(shopButton.DOFade(1, .5f));
+        sequence.Join(starLine.DOFade(1, .5f));
     }
 
     public void CloseShopButton()
@@ -149,7 +176,6 @@ public class UIManager : MonoBehaviour
 
     public void GetMoneyEffect(int value, Vector3 startPos, bool isDirect = false)
     {
-        ShakeStrength = 10;
         var EffectObject = getMoneyEffectPool.GetObject();
         EffectObject.transform.SetParent(getEffect);
         EffectObject.transform.localScale = Vector3.one;
@@ -158,7 +184,7 @@ public class UIManager : MonoBehaviour
         EffectPos.z = 100;
         EffectObject.transform.position = EffectPos;
         Sequence sequence = DOTween.Sequence();
-        var RandomPos = new Vector3(EffectPos.x + Random.Range(-.5f, .5f), EffectPos.y + Random.Range(-.5f, .5f), 100);
+        var RandomPos = EffectPos + (Random.insideUnitSphere * 0.5f);
         sequence.Append(EffectObject.transform.DOMove(RandomPos, .5f));
         sequence.Append(EffectObject.GetComponent<Image>().DOFade(0, .5f));
         if (!isDirect)
@@ -173,6 +199,7 @@ public class UIManager : MonoBehaviour
         }
         else
         {
+            VibrateForTime(0.05f);
             sequence.Join(EffectObject.transform.DOMove(MoneyText.transform.position, .5f));
             sequence.AppendCallback(() => {
                 GameManager.Instance.Data.Player.StarEnergy += value;
@@ -185,6 +212,5 @@ public class UIManager : MonoBehaviour
     {
         MoneyStackText.text = $"+ {MoneyStack.ToString("N0")} SE";
         MoneyText.GetComponent<NumberCounter>().Value = GameManager.Instance.Data.Player.StarEnergy;
-        Debug.Log(GameManager.Instance.Data.Player.StarEnergy);
     }
 }
