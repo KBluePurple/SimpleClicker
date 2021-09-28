@@ -22,7 +22,7 @@ public class ClickEffectManager : MonoBehaviour
         clickEffectPool = new PoolManager(EffectPrefab);
     }
 
-    private GameObject ClickEffectObject(Transform parant, float size)
+    public GameObject ClickEffectObject(Transform parant, float size)
     {
         var EffectObject = clickEffectPool.GetObject();
         EffectObject.transform.SetParent(parant);

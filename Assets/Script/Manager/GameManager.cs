@@ -29,6 +29,9 @@ public class GameManager : MonoSingleton<GameManager>
     ShopManager shopManager = null;
     public ShopManager Shop { get { return shopManager ??= GetComponent<ShopManager>(); } }
 
+    ClickEffectManager clickEffect = null;
+    public ClickEffectManager ClickEffect { get { return clickEffect ??= GetComponent<ClickEffectManager>(); } }
+
     void Start()
     {
         DontDestroyOnLoad(gameObject);

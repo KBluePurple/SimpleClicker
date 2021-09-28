@@ -76,6 +76,7 @@ public class UIManager : MonoBehaviour
         starYPos = ArrowTransform.position.y;
         shopUI.anchoredPosition = new Vector2(0, -UICanvas.GetComponent<RectTransform>().sizeDelta.y);
         shopCanvasGroup.alpha = 0;
+        shopOrbitText.color = new Color(1, 1, 1, 0);
         UpdateUI();
     }
 
