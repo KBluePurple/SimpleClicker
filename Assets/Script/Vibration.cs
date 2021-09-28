@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
- 
+
 public static class Vibration
 {
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -17,7 +17,7 @@ public static class Vibration
         Handheld.Vibrate();
 #endif
     }
- 
+
     public static void Vibrate(long milliseconds)
     {
         if (!Settings.Vibration) return;
@@ -36,12 +36,12 @@ public static class Vibration
         Handheld.Vibrate();
 #endif
     }
- 
+
     public static void Cancel()
     {
 #if UNITY_ANDROID && !UNITY_EDITOR
             AndroidVibrator.Call("cancel");
 #endif
     }
- 
+
 }

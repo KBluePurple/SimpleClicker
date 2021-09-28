@@ -33,7 +33,7 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     Text MoneyText = null;
-    
+
     [SerializeField]
     RectTransform SETextPos = null;
 
@@ -57,7 +57,7 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     Text shopOrbitText = null;
-    
+
     private int MoneyStack = 0;
     private Vector2 originalScale;
     public bool isShopOpened = false;
@@ -72,6 +72,7 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         getMoneyEffectPool = new PoolManager(getEffectPrefab);
+        shopUI.anchoredPosition = new Vector2(0, 0);
         starYPos = ArrowTransform.position.y;
         shopUI.anchoredPosition = new Vector2(0, -UICanvas.GetComponent<RectTransform>().sizeDelta.y);
         shopCanvasGroup.alpha = 0;
@@ -128,13 +129,13 @@ public class UIManager : MonoBehaviour
 
     private void SubStarLight(bool turnOn)
     {
-        
+
     }
 
     public void CloseShop()
     {
         isShopOpened = false;
-        Sequence sequence =  DOTween.Sequence();
+        Sequence sequence = DOTween.Sequence();
         sequence.Join(shopUI.DOAnchorPosY(-UICanvas.GetComponent<RectTransform>().sizeDelta.y, .5f));
         sequence.Join(starImage.DOMove(Vector2.zero, .5f));
         sequence.Join(star.DOScale(originalScale, .5f));
@@ -160,7 +161,8 @@ public class UIManager : MonoBehaviour
             MoneyStackText.GetComponent<RectTransform>().anchoredPosition = new Vector2(-492, -226);
             Sequence sequence = DOTween.Sequence();
             sequence.Append(MoneyStackText.DOFade(1f, .5f).From(0));
-            sequence.AppendCallback(() => {
+            sequence.AppendCallback(() =>
+            {
                 if (!isStackLooping) StartCoroutine(StackTimerLoop());
             });
         }
@@ -180,7 +182,7 @@ public class UIManager : MonoBehaviour
     private IEnumerator StackTimerLoop()
     {
         if (isStackLooping) yield break;
-        while(timer <= 10)
+        while (timer <= 10)
         {
             timer++;
             yield return new WaitForSeconds(0.1f);
@@ -197,7 +199,7 @@ public class UIManager : MonoBehaviour
             UpdateUI();
             return;
         }
-        
+
         var EffectObject = getMoneyEffectPool.GetObject();
         EffectObject.transform.SetParent(getEffect);
         EffectObject.transform.localScale = Vector3.one;
@@ -212,7 +214,8 @@ public class UIManager : MonoBehaviour
         if (!isDirect)
         {
             sequence.Join(EffectObject.transform.DOMove(MoneyStackText.transform.position, .5f));
-            sequence.AppendCallback(() => {
+            sequence.AppendCallback(() =>
+            {
                 getMoneyEffectPool.PutObject(EffectObject);
                 showStackText();
                 MoneyStack += value;
@@ -223,7 +226,8 @@ public class UIManager : MonoBehaviour
         {
             VibrateForTime(0.05f);
             sequence.Join(EffectObject.transform.DOMove(MoneyText.transform.position, .5f));
-            sequence.AppendCallback(() => {
+            sequence.AppendCallback(() =>
+            {
                 GameManager.Instance.Data.Player.StarEnergy += value;
                 UpdateUI();
             });

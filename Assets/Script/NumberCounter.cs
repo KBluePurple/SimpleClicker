@@ -56,7 +56,7 @@ public class NumberCounter : MonoBehaviour
 
         if (previousValue < newValue)
         {
-            while(previousValue < newValue)
+            while (previousValue < newValue)
             {
                 previousValue += stepAmount;
                 if (previousValue > newValue)

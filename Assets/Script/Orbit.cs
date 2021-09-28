@@ -4,7 +4,7 @@ using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine.Experimental.Rendering.Universal;
 
-public class Orbit : MonoBehaviour 
+public class Orbit : MonoBehaviour
 {
     [SerializeField]
     public List<RectTransform> SubStars;
@@ -35,7 +35,7 @@ public class Orbit : MonoBehaviour
         SubStars.Add(Instantiate(SubStars[0], transform));
         for (int i = 0; i < SubStars.Count; i++)
         {
-            float degree = (360f/SubStars.Count) * (float)i;
+            float degree = (360f / SubStars.Count) * (float)i;
             var x1 = (Mathf.Cos(degree * Mathf.Deg2Rad) * r);
             var y1 = (Mathf.Sin(degree * Mathf.Deg2Rad) * r);
 
@@ -68,7 +68,7 @@ public class Orbit : MonoBehaviour
 
     int lastSubStarIndex = 0;
     bool rotated = false;
-    private void FixedUpdate() 
+    private void FixedUpdate()
     {
         if (Enabled)
         {
@@ -77,7 +77,7 @@ public class Orbit : MonoBehaviour
                 float zAngle = transform.rotation.eulerAngles.z - 90;
                 zAngle = zAngle < 0 ? zAngle + 360 : zAngle;
 
-                float slicedAngle = 360f/SubStars.Count;
+                float slicedAngle = 360f / SubStars.Count;
                 slicedAngle = slicedAngle >= 360f ? 0 : slicedAngle;
 
                 float endAngle = (slicedAngle * lastSubStarIndex);
@@ -88,7 +88,7 @@ public class Orbit : MonoBehaviour
                     if (!(lastSubStarIndex == 0 && !rotated))
                     {
                         if (lastSubStarIndex == 0)
-                            rotated = false;    
+                            rotated = false;
 
                         RectTransform SubStar = SubStars[0];
                         foreach (var subStar in SubStars)

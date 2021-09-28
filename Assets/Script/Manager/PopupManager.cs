@@ -80,7 +80,7 @@ public class PopupManager : MonoBehaviour
             fadeoutSequence.AppendCallback(() => popupCanvas.gameObject.SetActive(false));
             bluePanel.DOFade(0, .5f);
         });
-        
+
         popupGroup.GetComponent<Image>().rectTransform.sizeDelta = new Vector2(1864.8f, 0);
 
         bluePanel.material.SetFloat("_Size", 0);

@@ -1,18 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ShopManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField]
+    RectTransform items = null;
+
+    private void Start()
     {
-        
+        for (int i = 0; i < items.childCount; i++)
+        {
+            items.GetChild(i).GetComponent<Button>().onClick.AddListener(() =>
+            {
+                onClickItem(i);
+            });
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void onClickItem(int index)
     {
-        
+        switch (index)
+        {
+            case 0:
+
+                break;
+        }
     }
 }

@@ -20,7 +20,7 @@ public class DataManager : MonoBehaviour
             {
                 GameManager.Instance.Star.AddOrbit();
             }
-            
+
             GameManager.Instance.Star.Orbits[0].GetComponent<Orbit>().SetValue(Player.Star.Orbits[0]);
         }
         GameManager.Instance.UI.UpdateUI();

@@ -48,7 +48,7 @@ public class ClickEffectManager : MonoBehaviour
         {
             for (var i = 0; i < 1; i++)
             {
-                GameManager.Instance.UI.GetMoneyEffect(GameManager.Instance.Data.Player.Star.EnergyPerTouch, 
+                GameManager.Instance.UI.GetMoneyEffect(GameManager.Instance.Data.Player.Star.EnergyPerTouch,
                 Camera.main.ScreenToWorldPoint(GameManager.Instance.TouchPoint()));
             }
         }
@@ -61,7 +61,7 @@ public class ClickEffectManager : MonoBehaviour
     public void OnClickUpgrade()
     {
         ClickEffectObject(UpgradeButtonEffect, 3);
-        
+
     }
 
     public void OnClickShop()

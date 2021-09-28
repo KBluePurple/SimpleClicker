@@ -19,13 +19,13 @@ public class GameManager : MonoSingleton<GameManager>
 
     PopupManager popupManager = null;
     public PopupManager Popup { get { return popupManager ??= GetComponent<PopupManager>(); } }
-    
+
     UIManager uIManager = null;
     public UIManager UI { get { return uIManager ??= GetComponent<UIManager>(); } }
-    
+
     StarManager starManager = null;
     public StarManager Star { get { return starManager ??= GetComponent<StarManager>(); } }
-    
+
     ShopManager shopManager = null;
     public ShopManager Shop { get { return shopManager ??= GetComponent<ShopManager>(); } }
 
