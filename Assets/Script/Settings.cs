@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 [System.Serializable]
-public class Settings
+public static class Settings
 {
-    public bool Vibration = true;
-    public bool EffectSound = true;
-    public bool BackGroundMusic = true;
+    public static bool Vibration = true;
+    public static bool EffectSound = true;
+    public static bool BackGroundMusic = true;
 }

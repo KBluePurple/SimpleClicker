@@ -12,13 +12,25 @@ public class Orbit : MonoBehaviour
     [SerializeField]
     float r;
 
+
+    public int Index = 0;
     public float Speed = 1;
-    
     public bool Enabled = false;
 
-    public int SE = 100;
+    public int Value = 100;
 
-    public void AddSubStar()
+    public void SetValue(Orbits orbit)
+    {
+        Speed = orbit.Speed;
+        Enabled = orbit.IsHave;
+        Value = orbit.Value;
+        for (int i = 1; i < orbit.Count; i++)
+        {
+            AddSubStar(true);
+        }
+    }
+
+    public void AddSubStar(bool isNoAnimaion = false)
     {
         SubStars.Add(Instantiate(SubStars[0], transform));
         for (int i = 0; i < SubStars.Count; i++)
@@ -31,11 +43,25 @@ public class Orbit : MonoBehaviour
             {
                 SubStars[i].DOAnchorPos(new Vector2(x1, y1), 3f).From(Vector2.zero);
                 var SubStarsLight = SubStars[i].GetComponent<Light2D>();
-                DOTween.To(() => SubStarsLight.intensity, x => SubStarsLight.intensity = x, .6f, 3).From(0f);
+                if (isNoAnimaion)
+                {
+                    SubStarsLight.intensity = .6f;
+                }
+                else
+                {
+                    DOTween.To(() => SubStarsLight.intensity, x => SubStarsLight.intensity = x, .6f, 3).From(0f);
+                }
             }
             else
             {
-                SubStars[i].DOAnchorPos(new Vector2(x1, y1), 3f);
+                if (isNoAnimaion)
+                {
+                    SubStars[i].anchoredPosition = new Vector2(x1, y1);
+                }
+                else
+                {
+                    SubStars[i].DOAnchorPos(new Vector2(x1, y1), 3f);
+                }
             }
         }
     }
@@ -44,7 +70,7 @@ public class Orbit : MonoBehaviour
     bool rotated = false;
     private void FixedUpdate() 
     {
-        if (Enabled && !GameManager.Instance.UI.isShopOpened)
+        if (Enabled)
         {
             if (Speed > 0)
             {
@@ -73,7 +99,7 @@ public class Orbit : MonoBehaviour
                             }
                         }
 
-                        GameManager.Instance.UI.GetMoneyEffect(SE, SubStar.transform.position, true);
+                        GameManager.Instance.UI.GetMoneyEffect(Value, SubStar.transform.position, true);
                         lastSubStarIndex++;
                         if (lastSubStarIndex >= SubStars.Count)
                             lastSubStarIndex = 0;

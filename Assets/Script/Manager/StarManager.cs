@@ -23,19 +23,7 @@ public class StarManager : MonoBehaviour
         starScales.Add(new Vector3(1.0f, 1.0f, 1.0f));
         starScales.Add(new Vector3(0.9f, 0.9f, 0.9f));
         starScales.Add(new Vector3(0.7f, 0.7f, 0.7f));
-        AddOrbit();
     }
-
-    // private void FixedUpdate() {
-    //     if (Orbits[0].Enabled)
-    //         Orbits[0].transform.Rotate(new Vector3(0, 0, 1.4f));
-    //     if (Orbits[1].Enabled)
-    //         Orbits[1].transform.Rotate(new Vector3(0, 0, 1.3f));
-    //     if (Orbits[2].Enabled)
-    //         Orbits[2].transform.Rotate(new Vector3(0, 0, 1.2f));
-    //     if (Orbits[3].Enabled)
-    //         Orbits[3].transform.Rotate(new Vector3(0, 0, 1.1f));
-    // }
 
     public void AddOrbit()
     {

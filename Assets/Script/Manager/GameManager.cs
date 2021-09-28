@@ -25,11 +25,15 @@ public class GameManager : MonoSingleton<GameManager>
     
     StarManager starManager = null;
     public StarManager Star { get { return starManager ??= GetComponent<StarManager>(); } }
+    
+    ShopManager shopManager = null;
+    public ShopManager Shop { get { return shopManager ??= GetComponent<ShopManager>(); } }
 
     void Start()
     {
         DontDestroyOnLoad(gameObject);
         StarImage.alphaHitTestMinimumThreshold = 0.5f;
+        Data.LoadData();
     }
 
     void Update()

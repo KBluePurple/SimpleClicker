@@ -12,6 +12,9 @@ public class ClickEffectManager : MonoBehaviour
     [SerializeField]
     Transform StarButtonEffect = null;
 
+    [SerializeField]
+    Transform UpgradeButtonEffect = null;
+
     PoolManager clickEffectPool = null;
 
     private void Start()
@@ -38,7 +41,6 @@ public class ClickEffectManager : MonoBehaviour
         return EffectObject;
     }
 
-    int a = 1;
     public void OnClickStar()
     {
         ClickEffectObject(StarButtonEffect, 3);
@@ -46,13 +48,20 @@ public class ClickEffectManager : MonoBehaviour
         {
             for (var i = 0; i < 1; i++)
             {
-                GameManager.Instance.UI.GetMoneyEffect(a++, Camera.main.ScreenToWorldPoint(GameManager.Instance.TouchPoint()));
+                GameManager.Instance.UI.GetMoneyEffect(GameManager.Instance.Data.Player.Star.EnergyPerTouch, 
+                Camera.main.ScreenToWorldPoint(GameManager.Instance.TouchPoint()));
             }
         }
         else
         {
             GameManager.Instance.UI.CloseShopButton();
         }
+    }
+
+    public void OnClickUpgrade()
+    {
+        ClickEffectObject(UpgradeButtonEffect, 3);
+        
     }
 
     public void OnClickShop()

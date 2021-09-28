@@ -23,9 +23,6 @@ public class UIManager : MonoBehaviour
     public RectTransform starImage = null;
 
     [SerializeField]
-    Image shopPanel = null;
-
-    [SerializeField]
     Image starLine = null;
 
     [SerializeField]
@@ -51,12 +48,21 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     Canvas OrbitCanvas = null;
+
+    [SerializeField]
+    RectTransform ArrowTransform = null;
+
+    [SerializeField]
+    CanvasGroup shopCanvasGroup = null;
+
+    [SerializeField]
+    Text shopOrbitText = null;
     
     private int MoneyStack = 0;
     private Vector2 originalScale;
-    private float shopOriginPos;
     public bool isShopOpened = false;
     PoolManager getMoneyEffectPool = null;
+    float starYPos;
 
     public float ShakeStrength = 1;
     public float ShakeAmount = 1;
@@ -66,11 +72,9 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         getMoneyEffectPool = new PoolManager(getEffectPrefab);
-        RectTransform shopPanelRT = shopPanel.GetComponent<RectTransform>();
-        float temp = UICanvas.GetComponent<RectTransform>().sizeDelta.y - shopPanelRT.sizeDelta.y;
-        shopPanelRT.anchoredPosition -= new Vector2(0, temp / 2);
-        shopOriginPos = shopUI.anchoredPosition.y;
-        shopPanelRT.sizeDelta = new Vector2(shopPanelRT.sizeDelta.x, UICanvas.GetComponent<RectTransform>().sizeDelta.y);
+        starYPos = ArrowTransform.position.y;
+        shopUI.anchoredPosition = new Vector2(0, -UICanvas.GetComponent<RectTransform>().sizeDelta.y);
+        shopCanvasGroup.alpha = 0;
         UpdateUI();
     }
 
@@ -105,28 +109,39 @@ public class UIManager : MonoBehaviour
     {
         originalScale = star.localScale;
         Sequence sequence = DOTween.Sequence();
+        Sequence sequence2 = DOTween.Sequence();
         sequence.Join(starImage.DOLocalMoveY(-200, .5f));
         sequence.Join(OrbitsRTF.DOLocalMoveY(-200, .5f));
         sequence.AppendInterval(.05f);
-        sequence.Append(starImage.DOLocalMoveY(520, .5f));
+        sequence.Append(starImage.DOMove(new Vector2(0, starYPos), .5f));
         sequence.Join(star.DOScale(new Vector2(1f, 1f), .5f));
-        sequence.Join(shopUI.DOAnchorPosY(UICanvas.GetComponent<RectTransform>().sizeDelta.y * 1.4f, .5f));
+        sequence.Join(shopUI.DOAnchorPosY(0, .5f));
         sequence.Join(shopButton.DOFade(0, .25f));
         sequence.Join(starLine.DOFade(0, .25f));
+        sequence2.AppendInterval(.75f);
+        sequence2.Append(shopCanvasGroup.DOFade(1, .5f));
+        sequence2.Join(shopOrbitText.DOFade(1, .5f));
         sequence.Join(OrbitsRTF.DOLocalMove(Vector3.zero, .5f));
         sequence.AppendCallback(() => isShopOpened = true);
         GameManager.Instance.Tasks.Quit.AddTask(() => CloseShop());
+    }
+
+    private void SubStarLight(bool turnOn)
+    {
+        
     }
 
     public void CloseShop()
     {
         isShopOpened = false;
         Sequence sequence =  DOTween.Sequence();
-        sequence.Join(shopUI.DOAnchorPosY(shopOriginPos, .5f));
-        sequence.Join(starImage.DOLocalMoveY(0, .5f));
+        sequence.Join(shopUI.DOAnchorPosY(-UICanvas.GetComponent<RectTransform>().sizeDelta.y, .5f));
+        sequence.Join(starImage.DOMove(Vector2.zero, .5f));
         sequence.Join(star.DOScale(originalScale, .5f));
+        sequence.Join(shopOrbitText.DOFade(0, .5f));
         sequence.Join(shopButton.DOFade(1, .5f));
         sequence.Join(starLine.DOFade(1, .5f));
+        sequence.Join(shopCanvasGroup.DOFade(0, .25f));
     }
 
     public void CloseShopButton()
@@ -176,6 +191,13 @@ public class UIManager : MonoBehaviour
 
     public void GetMoneyEffect(int value, Vector3 startPos, bool isDirect = false)
     {
+        if (isShopOpened)
+        {
+            GameManager.Instance.Data.Player.StarEnergy += value;
+            UpdateUI();
+            return;
+        }
+        
         var EffectObject = getMoneyEffectPool.GetObject();
         EffectObject.transform.SetParent(getEffect);
         EffectObject.transform.localScale = Vector3.one;
@@ -211,6 +233,7 @@ public class UIManager : MonoBehaviour
     public void UpdateUI()
     {
         MoneyStackText.text = $"+ {MoneyStack.ToString("N0")} SE";
+        MoneyText.text = $"{GameManager.Instance.Data.Player.StarEnergy.ToString("N0")} SE";
         MoneyText.GetComponent<NumberCounter>().Value = GameManager.Instance.Data.Player.StarEnergy;
     }
 }
