@@ -97,6 +97,7 @@ public class UIManager : MonoBehaviour
             StarCanvas.renderMode = RenderMode.ScreenSpaceCamera;
             OrbitCanvas.renderMode = RenderMode.ScreenSpaceCamera;
         }
+        star.position = new Vector3(star.position.x, star.position.y, 0);
     }
 
     public void VibrateForTime(float time)
@@ -115,6 +116,7 @@ public class UIManager : MonoBehaviour
         sequence.Join(starImage.DOLocalMoveY(-200, .5f));
         sequence.Join(OrbitsRTF.DOLocalMoveY(-200, .5f));
         sequence.AppendInterval(.05f);
+        sequence.AppendCallback(() => SetSubStarLight(false));
         sequence.Append(starImage.DOMove(new Vector2(0, starYPos), .5f));
         sequence.Join(star.DOScale(new Vector2(1f, 1f), .5f));
         sequence.Join(shopUI.DOAnchorPosY(0, .5f));
@@ -128,15 +130,43 @@ public class UIManager : MonoBehaviour
         GameManager.Instance.Tasks.Quit.AddTask(() => CloseShop());
     }
 
-    private void SubStarLight(bool turnOn)
+    private void SetSubStarLight(bool value)
     {
-
+        if (value)
+        {
+            foreach (var orbit in GameManager.Instance.Star.Orbits)
+            {
+                if (orbit.enabled)
+                {
+                    foreach (var substar in orbit.SubStars)
+                    {
+                        var substarLight = substar.GetComponent<Light2D>();
+                        DOTween.To(() => substarLight.intensity, x => substarLight.intensity = x, .6f, .5f).From(0f);
+                    }
+                }
+            }
+        }
+        else
+        {
+            foreach (var orbit in GameManager.Instance.Star.Orbits)
+            {
+                if (orbit.enabled)
+                {
+                    foreach (var substar in orbit.SubStars)
+                    {
+                        var substarLight = substar.GetComponent<Light2D>();
+                        DOTween.To(() => substarLight.intensity, x => substarLight.intensity = x, 0f, .5f).From(.6f);
+                    }
+                }
+            }
+        }
     }
 
     public void CloseShop()
     {
         isShopOpened = false;
         Sequence sequence = DOTween.Sequence();
+        sequence.AppendCallback(() => SetSubStarLight(true));
         sequence.Join(shopUI.DOAnchorPosY(-UICanvas.GetComponent<RectTransform>().sizeDelta.y, .5f));
         sequence.Join(starImage.DOMove(Vector2.zero, .5f));
         sequence.Join(star.DOScale(originalScale, .5f));

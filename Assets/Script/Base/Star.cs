@@ -4,6 +4,21 @@ using System.Collections.Generic;
 public class Star
 {
     public List<Orbits> Orbits;
-    public int EnergyPerTouch;
+    public int BaseEnergyPerTouch;
+    public int BaseUpgradePrise;
     public int UpgradeCount;
+
+    public int EnergyPerTouch
+    {
+        get {
+            return (int)(BaseEnergyPerTouch + UpgradeCount);
+        }
+    }
+
+    public int UpgradePrice
+    {
+        get {
+            return (int)(BaseUpgradePrise * (1 + (0.2 * UpgradeCount)));
+        }
+    }
 }

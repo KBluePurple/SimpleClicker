@@ -25,21 +25,29 @@ public class StarManager : MonoBehaviour
         starScales.Add(new Vector3(0.7f, 0.7f, 0.7f));
     }
 
-    public void AddOrbit()
+    public void AddOrbit(bool isNoAnimation = false)
     {
-        Sequence sequence = DOTween.Sequence();
-        if (GameManager.Instance.UI.isShopOpened)
+        if (isNoAnimation)
         {
-            sequence.AppendInterval(.5f);
-            GameManager.Instance.UI.CloseShopButton();
+            
+            Count++;
         }
-        var Star = GameManager.Instance.UI.star;
-        Orbits[Count].gameObject.SetActive(true);
-        Orbits[Count].Enabled = true;
-        sequence.Append(Orbits[Count].GetComponent<Image>().DOFade(1, 1).From(0));
-        sequence.Join(Star.DOScale(starScales[Count], 1f));
-        sequence.Join(Orbits[Count].SubStars[0].DOAnchorPosX(Orbits[Count].SubStars[0].anchoredPosition.x, 3f).From(new Vector2(1000, 0)));
-        sequence.Play();
-        Count++;
+        else
+        {
+            Sequence sequence = DOTween.Sequence();
+            if (GameManager.Instance.UI.isShopOpened)
+            {
+                sequence.AppendInterval(.5f);
+                GameManager.Instance.UI.CloseShopButton();
+            }
+            var Star = GameManager.Instance.UI.star;
+            Orbits[Count].gameObject.SetActive(true);
+            Orbits[Count].Enabled = true;
+            sequence.Append(Orbits[Count].GetComponent<Image>().DOFade(1, 1).From(0));
+            sequence.Join(Star.DOScale(starScales[Count], 1f));
+            sequence.Join(Orbits[Count].SubStars[0].DOAnchorPosX(Orbits[Count].SubStars[0].anchoredPosition.x, 3f).From(new Vector2(1000, 0)));
+            sequence.Play();
+            Count++;
+        }
     }
 }

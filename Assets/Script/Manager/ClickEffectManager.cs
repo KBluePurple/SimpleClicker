@@ -61,6 +61,7 @@ public class ClickEffectManager : MonoBehaviour
     public void OnClickUpgrade()
     {
         ClickEffectObject(UpgradeButtonEffect, 3);
+        GameManager.Instance.Shop.onClickUpgrade();
 
     }
 

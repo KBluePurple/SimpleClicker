@@ -9,7 +9,7 @@ public class DataManager : MonoBehaviour
 
     public void SaveData()
     {
-
+        
     }
 
     public void LoadData()
@@ -18,9 +18,8 @@ public class DataManager : MonoBehaviour
         {
             if (Player.Star.Orbits[i].IsHave)
             {
-                GameManager.Instance.Star.AddOrbit();
+                GameManager.Instance.Star.AddOrbit(true);
             }
-
             GameManager.Instance.Star.Orbits[0].GetComponent<Orbit>().SetValue(Player.Star.Orbits[0]);
         }
         GameManager.Instance.UI.UpdateUI();

@@ -10,20 +10,27 @@ public class ShopManager : MonoBehaviour
     RectTransform items = null;
 
     [SerializeField]
-    Text[] orbitTitles = null;
+    RectTransform[] orbitTitles = null;
 
     [SerializeField]
     Button[] arrows = null;
 
     [SerializeField]
-    Text valueText = null;
+    NumberCounter valueText = null;
 
     int curOrbitIndex = 0;
     int curItemIndex = 1;
     bool isPlayingAnimation = false;
 
+    CanvasGroup[] itemsCanvasGroups = new CanvasGroup[3];
+    Button[] itemsButtons = new Button[3];
     private void Start()
     {
+        for(int i = 0; i < 3; i++)
+            itemsCanvasGroups[i] = items.GetChild(i).GetComponent<CanvasGroup>();
+        for(int i = 0; i < 3; i++)
+            itemsButtons[i] = items.GetChild(i).GetComponent<Button>();
+
         for (int i = 0; i < items.childCount; i++)
         {
             int temp = i;
@@ -36,21 +43,21 @@ public class ShopManager : MonoBehaviour
             });
         }
 
-        orbitTitles[0].text = "Core\nStar";
-        orbitTitles[0].GetComponent<RectTransform>().DOLocalMoveX(0, .5f);
+        orbitTitles[0].GetComponent<Text>().text = "Core\nStar";
+        orbitTitles[0].DOLocalMoveX(0, .5f);
 
         arrows[0].interactable = false;
         arrows[0].GetComponent<CanvasGroup>().alpha = 0;
         items.GetComponent<CanvasGroup>().alpha = 0;
         items.anchoredPosition = new Vector2(-450, items.anchoredPosition.y);
-        items.GetChild(0).GetComponent<CanvasGroup>().alpha = 0f;
-        items.GetChild(0).GetComponent<Button>().interactable = false;
-        items.GetChild(1).GetComponent<CanvasGroup>().alpha = 0f;
-        items.GetChild(1).GetComponent<Button>().interactable = false;
-        items.GetChild(2).GetComponent<CanvasGroup>().alpha = 1f;
-        items.GetChild(2).GetComponent<Button>().interactable = true;
+        itemsCanvasGroups[0].alpha = 0f;
+        itemsButtons[0].interactable = false;
+        itemsCanvasGroups[1].alpha = 0f;
+        itemsButtons[1].interactable = false;
+        itemsCanvasGroups[2].alpha = 1f;
+        itemsButtons[2].interactable = true;
         items.GetChild(2).GetChild(0)
-        .GetComponent<RectTransform>().localScale = Vector2.one;
+        .localScale = Vector2.one;
         curItemIndex = 2;
         items.GetComponent<CanvasGroup>().alpha = 1;
 
@@ -67,107 +74,93 @@ public class ShopManager : MonoBehaviour
         {
             curOrbitIndex--;
             if (curOrbitIndex == 0)
-                orbitTitles[1].text = "Core\nStar";
+                orbitTitles[1].GetComponent<Text>().text = "Core\nStar";
             else
-                orbitTitles[1].text = $"{curOrbitIndex}st\nOrbit";
+                orbitTitles[1].GetComponent<Text>().text = $"{curOrbitIndex}st\nOrbit";
 
-            orbitTitles[1].GetComponent<RectTransform>().localPosition = new Vector2(-500, 0);
-            sequence.Join(orbitTitles[0].GetComponent<RectTransform>().DOLocalMoveX(500, .5f));
-            sequence.Join(orbitTitles[1].GetComponent<RectTransform>().DOLocalMoveX(0, .5f));
-            sequence.AppendCallback(() => {
-                orbitTitles[0].text = orbitTitles[1].text;
-                orbitTitles[0].GetComponent<RectTransform>().localPosition = orbitTitles[1].GetComponent<RectTransform>().localPosition;
-                orbitTitles[1].GetComponent<RectTransform>().localPosition = new Vector2(-500, 0);
+            orbitTitles[1].localPosition = new Vector2(-500, 0);
+            sequence.Join(orbitTitles[0].DOLocalMoveX(500, .5f));
+            sequence.Join(orbitTitles[1].DOLocalMoveX(0, .5f));
+            sequence.AppendCallback(() =>
+            {
+                orbitTitles[0].GetComponent<Text>().text = orbitTitles[1].GetComponent<Text>().text;
+                orbitTitles[0].localPosition = orbitTitles[1].localPosition;
+                orbitTitles[1].localPosition = new Vector2(-500, 0);
             });
         }
         else if (!isLeft && curItemIndex < 4)
         {
             curOrbitIndex++;
-            orbitTitles[1].text = $"{curOrbitIndex}st\nOrbit";
+            orbitTitles[1].GetComponent<Text>().text = $"{curOrbitIndex}st\nOrbit";
 
-            orbitTitles[1].GetComponent<RectTransform>().localPosition = new Vector2(500, 0);
-            sequence.Join(orbitTitles[0].GetComponent<RectTransform>().DOLocalMoveX(-500, .5f));
-            sequence.Join(orbitTitles[1].GetComponent<RectTransform>().DOLocalMoveX(0, .5f));
-            sequence.AppendCallback(() => {
-                orbitTitles[0].text = orbitTitles[1].text;
-                orbitTitles[0].GetComponent<RectTransform>().localPosition = orbitTitles[1].GetComponent<RectTransform>().localPosition;
-                orbitTitles[1].GetComponent<RectTransform>().localPosition = new Vector2(-500, 0);
+            orbitTitles[1].localPosition = new Vector2(500, 0);
+            sequence.Join(orbitTitles[0].DOLocalMoveX(-500, .5f));
+            sequence.Join(orbitTitles[1].DOLocalMoveX(0, .5f));
+            sequence.AppendCallback(() =>
+            {
+                orbitTitles[0].GetComponent<Text>().text = orbitTitles[1].GetComponent<Text>().text;
+                orbitTitles[0].localPosition = orbitTitles[1].localPosition;
+                orbitTitles[1].localPosition = new Vector2(-500, 0);
             });
         }
 
         if (curOrbitIndex == 0)
         {
             arrows[0].interactable = false;
-            sequence.Join(arrows[0].GetComponent<CanvasGroup>().DOFade(0, .25f));
             Sequence sequence1 = DOTween.Sequence();
+            sequence1.Join(arrows[0].GetComponent<CanvasGroup>().DOFade(0, .25f));
             sequence1.Join(items.GetComponent<CanvasGroup>().DOFade(0, .25f));
-            sequence1.AppendCallback(() => {
+            sequence1.AppendCallback(() =>
+            {
                 items.anchoredPosition = new Vector2(-450, items.anchoredPosition.y);
-                items.GetChild(0).GetComponent<CanvasGroup>().alpha = 0f;
-                items.GetChild(0).GetComponent<Button>().interactable = false;
-                items.GetChild(1).GetComponent<CanvasGroup>().alpha = 0f;
-                items.GetChild(1).GetComponent<Button>().interactable = false;
-                items.GetChild(2).GetComponent<CanvasGroup>().alpha = 1f;
-                items.GetChild(2).GetComponent<Button>().interactable = true;
+                itemsCanvasGroups[0].alpha = 0f;
+                itemsButtons[0].interactable = false;
+                itemsCanvasGroups[1].alpha = 0f;
+                itemsButtons[1].interactable = false;
+                itemsCanvasGroups[2].alpha = 1f;
+                itemsButtons[2].interactable = true;
                 items.GetChild(2).GetChild(0)
-                .GetComponent<RectTransform>().localScale = Vector2.one;
+                .localScale = Vector2.one;
                 curItemIndex = 2;
-            });
-            sequence1.Join(items.GetComponent<CanvasGroup>().DOFade(1, .25f));
-        }
-        else if (curOrbitIndex == 4)
-        {
-            arrows[1].interactable = false;
-            sequence.Join(arrows[1].GetComponent<CanvasGroup>().DOFade(0, .25f));
-            Sequence sequence1 = DOTween.Sequence();
-            sequence1.Join(items.GetComponent<CanvasGroup>().DOFade(0, .25f));
-            sequence1.AppendCallback(() => {
-                items.anchoredPosition = new Vector2(0, items.anchoredPosition.y);
-                items.GetChild(0).GetComponent<CanvasGroup>().alpha = .5f;
-                items.GetChild(0).GetComponent<Button>().interactable = true;
-                items.GetChild(0).GetChild(0)
-                .GetComponent<RectTransform>().localScale = new Vector2(.8f, .8f);
-                items.GetChild(1).GetComponent<CanvasGroup>().alpha = 1f;
-                items.GetChild(1).GetComponent<Button>().interactable = true;
-                items.GetChild(1).GetChild(0)
-                .GetComponent<RectTransform>().localScale = Vector2.one;
-                items.GetChild(2).GetComponent<CanvasGroup>().alpha = .5f;
-                items.GetChild(2).GetComponent<Button>().interactable = true;
-                items.GetChild(2).GetChild(0)
-                .GetComponent<RectTransform>().localScale = new Vector2(.8f, .8f);
-                curItemIndex = 1;
             });
             sequence1.Join(items.GetComponent<CanvasGroup>().DOFade(1, .25f));
         }
         else
         {
             arrows[0].interactable = true;
-            sequence.Join(arrows[0].GetComponent<CanvasGroup>().DOFade(1, .25f));
-            arrows[1].interactable = true;
-            sequence.Join(arrows[1].GetComponent<CanvasGroup>().DOFade(1, .25f));
             Sequence sequence1 = DOTween.Sequence();
+            sequence1.Join(arrows[0].GetComponent<CanvasGroup>().DOFade(1, .25f));
+            arrows[1].interactable = true;
+            sequence1.Join(arrows[1].GetComponent<CanvasGroup>().DOFade(1, .25f));
             sequence1.Join(items.GetComponent<CanvasGroup>().DOFade(0, .25f));
-            sequence1.AppendCallback(() => {
-                items.anchoredPosition = new Vector2(0, items.anchoredPosition.y);
-                items.GetChild(0).GetComponent<CanvasGroup>().alpha = .5f;
-                items.GetChild(0).GetComponent<Button>().interactable = true;
+            sequence1.AppendCallback(() =>
+            {
+                items.anchoredPosition = new Vector2(450, items.anchoredPosition.y);
+                itemsCanvasGroups[0].alpha = 1f;
+                itemsButtons[0].interactable = true;
                 items.GetChild(0).GetChild(0)
-                .GetComponent<RectTransform>().localScale = new Vector2(.8f, .8f);
-                items.GetChild(1).GetComponent<CanvasGroup>().alpha = 1f;
-                items.GetChild(1).GetComponent<Button>().interactable = true;
+                .localScale = Vector2.one;
+                itemsCanvasGroups[1].alpha = .5f;
+                itemsButtons[1].interactable = true;
                 items.GetChild(1).GetChild(0)
-                .GetComponent<RectTransform>().localScale = Vector2.one;
-                items.GetChild(2).GetComponent<CanvasGroup>().alpha = .5f;
-                items.GetChild(2).GetComponent<Button>().interactable = true;
+                .localScale = new Vector2(.8f, .8f);
+                itemsCanvasGroups[2].alpha = 0f;
+                itemsButtons[2].interactable = true;
                 items.GetChild(2).GetChild(0)
-                .GetComponent<RectTransform>().localScale = new Vector2(.8f, .8f);
-                curItemIndex = 1;
+                .localScale = new Vector2(.8f, .8f);
+                curItemIndex = 0;
             });
             sequence1.Join(items.GetComponent<CanvasGroup>().DOFade(1, .25f));
         }
-        
+
+        if (curOrbitIndex == 4)
+        {
+            arrows[1].interactable = false;
+        }
+
         sequence.AppendInterval(.25f);
-        sequence.AppendCallback(() => {
+        sequence.AppendCallback(() =>
+        {
             isPlayingAnimation = false;
         });
         UpdateShopUI();
@@ -175,7 +168,23 @@ public class ShopManager : MonoBehaviour
 
     public void UpdateShopUI()
     {
-        valueText.GetComponent<NumberCounter>().Value += 10;
+        switch (curOrbitIndex)
+        {
+            case 0:
+                valueText.Value = GameManager.Instance.Data.Player.Star.UpgradePrice;
+                break;
+            case 1:
+                switch (curItemIndex)
+                {
+                    case 0:
+                        valueText.Value = GameManager.Instance.Data.Player.Star.Orbits[0].Price;
+                        break;
+                    case 1:
+                        
+                        break;
+                }
+                break;
+        }
     }
 
     public void onClickItem(int index)
@@ -187,13 +196,13 @@ public class ShopManager : MonoBehaviour
                 if (curItemIndex == 1)
                 {
                     items.DOAnchorPosX(450, .5f);
-                    items.GetChild(0).GetComponent<CanvasGroup>().DOFade(1f, animationTime);
+                    itemsCanvasGroups[0].DOFade(1f, animationTime);
                     items.GetChild(0).GetChild(0)
-                    .GetComponent<RectTransform>().DOScale(Vector2.one, .5f);
-                    items.GetChild(1).GetComponent<CanvasGroup>().DOFade(.5f, animationTime);
+                    .DOScale(Vector2.one, .5f);
+                    itemsCanvasGroups[1].DOFade(.5f, animationTime);
                     items.GetChild(1).GetChild(0)
-                    .GetComponent<RectTransform>().DOScale(new Vector2(.8f, .8f), .5f);
-                    items.GetChild(2).GetComponent<CanvasGroup>().DOFade(0, animationTime);
+                    .DOScale(new Vector2(.8f, .8f), .5f);
+                    itemsCanvasGroups[2].DOFade(0, animationTime);
                     curItemIndex = 0;
                 }
                 break;
@@ -201,15 +210,15 @@ public class ShopManager : MonoBehaviour
                 if (curItemIndex != 1)
                 {
                     items.DOAnchorPosX(0, .5f);
-                    items.GetChild(0).GetComponent<CanvasGroup>().DOFade(.5f, animationTime);
+                    itemsCanvasGroups[0].DOFade(.5f, animationTime);
                     items.GetChild(0).GetChild(0)
-                    .GetComponent<RectTransform>().DOScale(new Vector2(.8f, .8f), .5f);
-                    items.GetChild(1).GetComponent<CanvasGroup>().DOFade(1f, animationTime);
+                    .DOScale(new Vector2(.8f, .8f), .5f);
+                    itemsCanvasGroups[1].DOFade(1f, animationTime);
                     items.GetChild(1).GetChild(0)
-                    .GetComponent<RectTransform>().DOScale(Vector2.one, .5f);
-                    items.GetChild(2).GetComponent<CanvasGroup>().DOFade(.5f, animationTime);
+                    .DOScale(Vector2.one, .5f);
+                    itemsCanvasGroups[2].DOFade(.5f, animationTime);
                     items.GetChild(2).GetChild(0)
-                    .GetComponent<RectTransform>().DOScale(new Vector2(.8f, .8f), .5f);
+                    .DOScale(new Vector2(.8f, .8f), .5f);
                     curItemIndex = 1;
                 }
                 break;
@@ -217,17 +226,42 @@ public class ShopManager : MonoBehaviour
                 if (curItemIndex == 1)
                 {
                     items.DOAnchorPosX(-450, .5f);
-                    items.GetChild(0).GetComponent<CanvasGroup>().DOFade(0, animationTime);
-                    items.GetChild(1).GetComponent<CanvasGroup>().DOFade(.5f, animationTime);
+                    itemsCanvasGroups[0].DOFade(0, animationTime);
+                    itemsCanvasGroups[1].DOFade(.5f, animationTime);
                     items.GetChild(1).GetChild(0)
-                    .GetComponent<RectTransform>().DOScale(new Vector2(.8f, .8f), .5f);
-                    items.GetChild(2).GetComponent<CanvasGroup>().DOFade(1f, animationTime);
+                    .DOScale(new Vector2(.8f, .8f), .5f);
+                    itemsCanvasGroups[2].DOFade(1f, animationTime);
                     items.GetChild(2).GetChild(0)
-                    .GetComponent<RectTransform>().DOScale(Vector2.one, .5f);
+                    .DOScale(Vector2.one, .5f);
                     curItemIndex = 2;
                 }
                 break;
         }
         UpdateShopUI();
+    }
+
+    public void onClickUpgrade()
+    {
+        switch (curOrbitIndex)
+        {
+            case 0:
+                break;
+            case 1:
+                switch (curItemIndex)
+                {
+                    case 0:
+                        GameManager.Instance.Star.AddOrbit();
+                        break;
+                    case 1:
+                        foreach (Orbit orbit in GameManager.Instance.Star.Orbits)
+                        {
+                            if (orbit.Enabled)
+                                orbit.AddSubStar();
+                        }
+                        GameManager.Instance.Tasks.Quit.BackButtonHandler();
+                        break;
+                }
+                break;
+        }
     }
 }

@@ -68,7 +68,7 @@ public class GameManager : MonoSingleton<GameManager>
     {
         if (Input.touches.Length > 0)
         {
-            return Input.touches[0].position;
+            return Input.touches[(int)Random.Range(0, Input.touchCount - 1)].position;
         }
         else
         {

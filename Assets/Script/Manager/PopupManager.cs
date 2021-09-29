@@ -62,30 +62,39 @@ public class PopupManager : MonoBehaviour
     [SerializeField]
     Sprite[] buttons = null;
 
+    CanvasGroup popupCanvasGroup;
+
     private void Start()
     {
-        popupCanvas.gameObject.SetActive(false);
         button1.onClick.AddListener(() => Hide());
+        popupCanvasGroup = popupCanvas.GetComponent<CanvasGroup>();
+    }
+
+    void active(bool value)
+    {
+        if (value)
+        {
+            popupCanvasGroup.alpha = 1;
+            popupCanvasGroup.interactable = true;
+            popupCanvasGroup.blocksRaycasts = true;
+        }
+        else
+        {
+            popupCanvasGroup.alpha = 0;
+            popupCanvasGroup.interactable = false;
+            popupCanvasGroup.blocksRaycasts = false;
+        }
     }
 
     public void Show(string title, string description, PopupButton button1, PopupButton button2)
     {
-        if (popupCanvas.gameObject.activeSelf) return;
-
-        GameManager.Instance.Tasks.Quit.AddTask(() =>
-        {
-            bluePanel.material.DOFloat(0, "_Size", .3f);
-            Sequence fadeoutSequence = DOTween.Sequence();
-            fadeoutSequence.Append(popupGroup.DOFade(0, .5f));
-            fadeoutSequence.AppendCallback(() => popupCanvas.gameObject.SetActive(false));
-            bluePanel.DOFade(0, .5f);
-        });
+        if (popupCanvasGroup.alpha == 1) return;
 
         popupGroup.GetComponent<Image>().rectTransform.sizeDelta = new Vector2(1864.8f, 0);
 
         bluePanel.material.SetFloat("_Size", 0);
-        popupGroup.alpha = 0;
-        popupCanvas.gameObject.SetActive(true);
+        active(true);
+
         titleText.text = title;
         descriptionText.text = description;
 
@@ -121,6 +130,18 @@ public class PopupManager : MonoBehaviour
         popupGroup.DOFade(1, .5f);
 
         bluePanel.DOFade(.3f, .5f);
+
+        GameManager.Instance.Tasks.Quit.AddTask(() =>
+        {
+            Debug.Log("back");
+            bluePanel.material.DOFloat(0, "_Size", .3f);
+            Sequence fadeoutSequence = DOTween.Sequence();
+            fadeoutSequence.Append(popupGroup.DOFade(0, .5f));
+            fadeoutSequence.AppendCallback(() => {
+                active(false);
+            });
+            bluePanel.DOFade(0, .5f);
+        });
     }
 
     public void Hide()
