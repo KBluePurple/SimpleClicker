@@ -41,22 +41,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            foreach (Orbit orbit in Star.Orbits)
-            {
-                if (orbit.Enabled)
-                    orbit.AddSubStar();
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            Star.AddOrbit();
-        }
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            UI.VibrateForTime(1f);
-        }
+        
     }
 
     public GameObject InstantiateObj(GameObject gameObject)

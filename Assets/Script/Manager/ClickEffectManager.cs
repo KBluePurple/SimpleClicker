@@ -75,6 +75,6 @@ public class ClickEffectManager : MonoBehaviour
 
     public void OnClickSetting()
     {
-        ClickEffectObject(SettingButtonEffect, 3);
+        ClickEffectObject(SettingButtonEffect, 1);
     }
 }

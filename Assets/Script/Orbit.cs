@@ -19,14 +19,18 @@ public class Orbit : MonoBehaviour
 
     public int Value = 100;
 
-    public void SetValue(Orbits orbit)
+    public void SetValue(Orbits orbit, bool first = true)
     {
         Speed = orbit.Speed;
         Enabled = orbit.IsHave;
         Value = orbit.Value;
-        for (int i = 1; i < orbit.Count; i++)
+
+        if (first)
         {
-            AddSubStar(true);
+            for (int i = 1; i < orbit.Count; i++)
+            {
+                AddSubStar(true);
+            }
         }
     }
 

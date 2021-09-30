@@ -17,6 +17,9 @@ public class ShopManager : MonoBehaviour
     Button[] arrows = null;
 
     [SerializeField]
+    Text descriptionText = null;
+
+    [SerializeField]
     NumberCounter valueText = null;
 
     [SerializeField]
@@ -71,8 +74,105 @@ public class ShopManager : MonoBehaviour
         UpdateShopUI();
     }
 
+    public void UpdateOrbitSelect()
+    {
+        int orbitCount = 0;
+        foreach (var orbit in GameManager.Instance.Star.Orbits)
+        {
+            if (orbit.Enabled)
+                orbitCount++;
+        }
+
+        if (curOrbitIndex == 0)
+        {
+            arrows[0].interactable = false;
+            arrows[1].interactable = true;
+            Sequence sequence1 = DOTween.Sequence();
+            sequence1.Join(arrows[0].GetComponent<CanvasGroup>().DOFade(0, 0));
+            sequence1.Join(arrows[1].GetComponent<CanvasGroup>().DOFade(1, 0));
+            sequence1.Join(items.GetComponent<CanvasGroup>().DOFade(0, 0));
+            sequence1.AppendCallback(() =>
+            {
+                items.anchoredPosition = new Vector2(-450, items.anchoredPosition.y);
+                itemsCanvasGroups[0].alpha = 0f;
+                itemsButtons[0].interactable = false;
+                itemsCanvasGroups[1].alpha = 0f;
+                itemsButtons[1].interactable = false;
+                itemsCanvasGroups[2].alpha = 1f;
+                itemsButtons[2].interactable = true;
+                items.GetChild(2).GetChild(0)
+                .localScale = Vector2.one;
+            });
+            curItemIndex = 2;
+            sequence1.AppendCallback(() => upgradeButton.GetChild(1).GetComponent<Text>().text = "UPGRADE");
+            sequence1.AppendCallback(() => descriptionText.text = "업그레이드 비용");
+            sequence1.Join(items.GetComponent<CanvasGroup>().DOFade(1, 0));
+        }
+        else if (curOrbitIndex <= orbitCount)
+        {
+            arrows[0].interactable = true;
+            Sequence sequence1 = DOTween.Sequence();
+            sequence1.Join(arrows[0].GetComponent<CanvasGroup>().DOFade(1, 0));
+            if (curOrbitIndex < 4)
+            {
+                arrows[1].interactable = true;
+                sequence1.Join(arrows[1].GetComponent<CanvasGroup>().DOFade(1, 0));
+            }
+            sequence1.Join(items.GetComponent<CanvasGroup>().DOFade(0, 0));
+            sequence1.AppendCallback(() =>
+            {
+                items.anchoredPosition = new Vector2(450, items.anchoredPosition.y);
+                itemsCanvasGroups[0].alpha = 1f;
+                itemsButtons[0].interactable = true;
+                items.GetChild(0).GetChild(0)
+                .localScale = Vector2.one;
+                itemsCanvasGroups[1].alpha = .5f;
+                itemsButtons[1].interactable = true;
+                items.GetChild(1).GetChild(0)
+                .localScale = new Vector2(.8f, .8f);
+                itemsCanvasGroups[2].alpha = 0f;
+                itemsButtons[2].interactable = true;
+                items.GetChild(2).GetChild(0)
+                .localScale = new Vector2(.8f, .8f);
+            });
+            curItemIndex = 0;
+            sequence1.AppendCallback(() => upgradeButton.GetChild(1).GetComponent<Text>().text = "UPGRADE");
+            sequence1.AppendCallback(() => descriptionText.text = "업그레이드 비용");
+            sequence1.Join(items.GetComponent<CanvasGroup>().DOFade(1, 0));
+        }
+        else
+        {
+            arrows[0].interactable = true;
+            arrows[1].interactable = false;
+            Sequence sequence1 = DOTween.Sequence();
+            sequence1.Join(arrows[0].GetComponent<CanvasGroup>().DOFade(1, .25f));
+            sequence1.Join(arrows[1].GetComponent<CanvasGroup>().DOFade(0, .25f));
+            sequence1.Join(items.GetComponent<CanvasGroup>().DOFade(0, .25f));
+
+            // TODO: 자물쇠 아이콘 표시
+
+            sequence1.AppendCallback(() => upgradeButton.GetChild(1).GetComponent<Text>().text = "LOCKED");
+            sequence1.AppendCallback(() => descriptionText.text = "잠금 해제 비용");
+
+            curItemIndex = 0;
+        }
+
+        if (curOrbitIndex == 4)
+        {
+            arrows[1].interactable = false;
+        }
+        UpdateShopUI();
+    }
+
     private void changeOrbitSelect(bool isLeft)
     {
+        int orbitCount = 0;
+        foreach (var orbit in GameManager.Instance.Star.Orbits)
+        {
+            if (orbit.Enabled)
+                orbitCount++;
+        }
+
         if (isPlayingAnimation) return;
         isPlayingAnimation = true;
         Sequence sequence = DOTween.Sequence();
@@ -113,8 +213,10 @@ public class ShopManager : MonoBehaviour
         if (curOrbitIndex == 0)
         {
             arrows[0].interactable = false;
+            arrows[1].interactable = true;
             Sequence sequence1 = DOTween.Sequence();
             sequence1.Join(arrows[0].GetComponent<CanvasGroup>().DOFade(0, .25f));
+            sequence1.Join(arrows[1].GetComponent<CanvasGroup>().DOFade(1, .25f));
             sequence1.Join(items.GetComponent<CanvasGroup>().DOFade(0, .25f));
             sequence1.AppendCallback(() =>
             {
@@ -129,15 +231,20 @@ public class ShopManager : MonoBehaviour
                 .localScale = Vector2.one;
             });
             curItemIndex = 2;
+            sequence1.AppendCallback(() => upgradeButton.GetChild(1).GetComponent<Text>().text = "UPGRADE");
+            sequence1.AppendCallback(() => descriptionText.text = "업그레이드 비용");
             sequence1.Join(items.GetComponent<CanvasGroup>().DOFade(1, .25f));
         }
-        else
+        else if (curOrbitIndex <= orbitCount)
         {
             arrows[0].interactable = true;
             Sequence sequence1 = DOTween.Sequence();
             sequence1.Join(arrows[0].GetComponent<CanvasGroup>().DOFade(1, .25f));
-            arrows[1].interactable = true;
-            sequence1.Join(arrows[1].GetComponent<CanvasGroup>().DOFade(1, .25f));
+            if (curOrbitIndex < 4)
+            {
+                arrows[1].interactable = true;
+                sequence1.Join(arrows[1].GetComponent<CanvasGroup>().DOFade(1, .25f));
+            }
             sequence1.Join(items.GetComponent<CanvasGroup>().DOFade(0, .25f));
             sequence1.AppendCallback(() =>
             {
@@ -156,7 +263,25 @@ public class ShopManager : MonoBehaviour
                 .localScale = new Vector2(.8f, .8f);
             });
             curItemIndex = 0;
+            sequence1.AppendCallback(() => upgradeButton.GetChild(1).GetComponent<Text>().text = "UPGRADE");
+            sequence1.AppendCallback(() => descriptionText.text = "업그레이드 비용");
             sequence1.Join(items.GetComponent<CanvasGroup>().DOFade(1, .25f));
+        }
+        else
+        {
+            arrows[0].interactable = true;
+            arrows[1].interactable = false;
+            Sequence sequence1 = DOTween.Sequence();
+            sequence1.Join(arrows[0].GetComponent<CanvasGroup>().DOFade(1, .25f));
+            sequence1.Join(arrows[1].GetComponent<CanvasGroup>().DOFade(0, .25f));
+            sequence1.Join(items.GetComponent<CanvasGroup>().DOFade(0, .25f));
+
+            // TODO: 자물쇠 아이콘 표시
+
+            sequence1.AppendCallback(() => upgradeButton.GetChild(1).GetComponent<Text>().text = "LOCKED");
+            sequence1.AppendCallback(() => descriptionText.text = "잠금 해제 비용");
+
+            curItemIndex = 0;
         }
 
         if (curOrbitIndex == 4)
@@ -264,19 +389,36 @@ public class ShopManager : MonoBehaviour
                 switch (curItemIndex)
                 {
                     case 0:
-                        upgradePrice = playerDate.Star.Orbits[curOrbitIndex - 1].SpeedPrice;
-                        tempFunction = () => playerDate.Star.Orbits[curOrbitIndex - 1].SpeedUpgrade++;
+                        if (playerDate.Star.Orbits[curOrbitIndex - 1].IsHave)
+                        {
+                            upgradePrice = playerDate.Star.Orbits[curOrbitIndex - 1].SpeedPrice;
+	                        tempFunction = () => {
+                                playerDate.Star.Orbits[curOrbitIndex - 1].SpeedUpgrade++;
+                                GameManager.Instance.Star.Orbits[curOrbitIndex - 1].SetValue(playerDate.Star.Orbits[curOrbitIndex - 1], false);
+                            };
+                        }
+                        else
+                        {
+                            upgradePrice = playerDate.Star.Orbits[curOrbitIndex - 1].BaseValuePrice;
+                            tempFunction = () => {
+                                playerDate.Star.Orbits[curOrbitIndex - 1].IsHave = true;
+                                GameManager.Instance.Star.AddOrbit();
+                            };
+                        }
                         break;
                     case 1:
                         upgradePrice = playerDate.Star.Orbits[curOrbitIndex - 1].CountPrice;
                         tempFunction = () => {
                             playerDate.Star.Orbits[curOrbitIndex - 1].Count++;
-                            GameManager.Instance.Star.Orbits[curOrbitIndex - 1].AddSubStar();
+                            GameManager.Instance.Star.Orbits[curOrbitIndex - 1].AddSubStar(false);
                         };
                         break;
                     case 2:
                         upgradePrice = playerDate.Star.Orbits[curOrbitIndex - 1].ValuePrice;
-                        tempFunction = () => playerDate.Star.Orbits[curOrbitIndex - 1].ValueUpgrade++;
+                        tempFunction = () => {
+                            playerDate.Star.Orbits[curOrbitIndex - 1].ValueUpgrade++;
+                            GameManager.Instance.Star.Orbits[curOrbitIndex - 1].SetValue(playerDate.Star.Orbits[curOrbitIndex - 1], false);
+                        };;
                         break;
                     default:
                         upgradePrice = 0;

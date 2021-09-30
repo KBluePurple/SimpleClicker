@@ -111,6 +111,7 @@ public class UIManager : MonoBehaviour
     public void OpenShop()
     {
         originalScale = star.localScale;
+        GameManager.Instance.Shop.UpdateOrbitSelect();
         Sequence sequence = DOTween.Sequence();
         Sequence sequence2 = DOTween.Sequence();
         sequence.Join(starImage.DOLocalMoveY(-200, .5f));

@@ -42,7 +42,7 @@ public class Orbits
     public int Speed
     {
         get {
-            return (int)(BaseSpeed * (1 + (0.1 * SpeedUpgrade)));
+            return (int)(BaseSpeed * (1 + (0.2 * SpeedUpgrade)));
         }
     }
 }
