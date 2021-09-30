@@ -18,7 +18,7 @@ public class Star
     public int UpgradePrice
     {
         get {
-            return (int)(BaseUpgradePrise * (1 + (0.2 * UpgradeCount)));
+            return (int)(EnergyPerTouch * (1 + (1 * UpgradeCount)));
         }
     }
 }

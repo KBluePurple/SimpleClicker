@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using System;
 
 public class ShopManager : MonoBehaviour
 {
@@ -17,6 +18,9 @@ public class ShopManager : MonoBehaviour
 
     [SerializeField]
     NumberCounter valueText = null;
+
+    [SerializeField]
+    RectTransform upgradeButton = null;
 
     int curOrbitIndex = 0;
     int curItemIndex = 1;
@@ -63,6 +67,8 @@ public class ShopManager : MonoBehaviour
 
         arrows[0].onClick.AddListener(() => changeOrbitSelect(true));
         arrows[1].onClick.AddListener(() => changeOrbitSelect(false));
+
+        UpdateShopUI();
     }
 
     private void changeOrbitSelect(bool isLeft)
@@ -121,8 +127,8 @@ public class ShopManager : MonoBehaviour
                 itemsButtons[2].interactable = true;
                 items.GetChild(2).GetChild(0)
                 .localScale = Vector2.one;
-                curItemIndex = 2;
             });
+            curItemIndex = 2;
             sequence1.Join(items.GetComponent<CanvasGroup>().DOFade(1, .25f));
         }
         else
@@ -148,8 +154,8 @@ public class ShopManager : MonoBehaviour
                 itemsButtons[2].interactable = true;
                 items.GetChild(2).GetChild(0)
                 .localScale = new Vector2(.8f, .8f);
-                curItemIndex = 0;
             });
+            curItemIndex = 0;
             sequence1.Join(items.GetComponent<CanvasGroup>().DOFade(1, .25f));
         }
 
@@ -173,14 +179,17 @@ public class ShopManager : MonoBehaviour
             case 0:
                 valueText.Value = GameManager.Instance.Data.Player.Star.UpgradePrice;
                 break;
-            case 1:
+            default:
                 switch (curItemIndex)
                 {
                     case 0:
-                        valueText.Value = GameManager.Instance.Data.Player.Star.Orbits[0].Price;
+                        valueText.Value = GameManager.Instance.Data.Player.Star.Orbits[curOrbitIndex - 1].SpeedPrice;
                         break;
                     case 1:
-                        
+                        valueText.Value = GameManager.Instance.Data.Player.Star.Orbits[curOrbitIndex - 1].CountPrice;
+                        break;
+                    case 2:
+                        valueText.Value = GameManager.Instance.Data.Player.Star.Orbits[curOrbitIndex - 1].ValuePrice;
                         break;
                 }
                 break;
@@ -242,26 +251,67 @@ public class ShopManager : MonoBehaviour
 
     public void onClickUpgrade()
     {
+        var playerDate = GameManager.Instance.Data.Player;
+        int upgradePrice;
+        Action tempFunction = () => {};
         switch (curOrbitIndex)
         {
             case 0:
+                upgradePrice = playerDate.Star.UpgradePrice;
+                tempFunction = () => playerDate.Star.UpgradeCount++;
                 break;
-            case 1:
+            default:
                 switch (curItemIndex)
                 {
                     case 0:
-                        GameManager.Instance.Star.AddOrbit();
+                        upgradePrice = playerDate.Star.Orbits[curOrbitIndex - 1].SpeedPrice;
+                        tempFunction = () => playerDate.Star.Orbits[curOrbitIndex - 1].SpeedUpgrade++;
                         break;
                     case 1:
-                        foreach (Orbit orbit in GameManager.Instance.Star.Orbits)
-                        {
-                            if (orbit.Enabled)
-                                orbit.AddSubStar();
-                        }
-                        GameManager.Instance.Tasks.Quit.BackButtonHandler();
+                        upgradePrice = playerDate.Star.Orbits[curOrbitIndex - 1].CountPrice;
+                        tempFunction = () => {
+                            playerDate.Star.Orbits[curOrbitIndex - 1].Count++;
+                            GameManager.Instance.Star.Orbits[curOrbitIndex - 1].AddSubStar();
+                        };
+                        break;
+                    case 2:
+                        upgradePrice = playerDate.Star.Orbits[curOrbitIndex - 1].ValuePrice;
+                        tempFunction = () => playerDate.Star.Orbits[curOrbitIndex - 1].ValueUpgrade++;
+                        break;
+                    default:
+                        upgradePrice = 0;
+                        tempFunction = () => {};
                         break;
                 }
                 break;
         }
+
+        if (playerDate.StarEnergy >= upgradePrice)
+        {
+            playerDate.StarEnergy -= upgradePrice;
+            tempFunction.Invoke();
+        }
+        else
+        {
+            StartCoroutine(cantUpgradeAnimation());
+        }
+
+        UpdateShopUI();
+        GameManager.Instance.UI.UpdateUI();
+    }
+
+    public IEnumerator cantUpgradeAnimation()
+    {
+        for(int i = 0; i < 6; i++)
+        {
+            if (i % 2 == 0)
+                upgradeButton.localPosition = new Vector2(-20 - i, upgradeButton.localPosition.y);
+            else
+                upgradeButton.localPosition = new Vector2(20 - i, upgradeButton.localPosition.y);
+
+            yield return new WaitForSeconds(0.04f);
+        }
+
+        upgradeButton.localPosition = new Vector2(0, upgradeButton.localPosition.y);
     }
 }

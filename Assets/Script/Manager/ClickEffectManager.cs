@@ -15,6 +15,9 @@ public class ClickEffectManager : MonoBehaviour
     [SerializeField]
     Transform UpgradeButtonEffect = null;
 
+    [SerializeField]
+    Transform SettingButtonEffect = null;
+
     PoolManager clickEffectPool = null;
 
     private void Start()
@@ -68,5 +71,10 @@ public class ClickEffectManager : MonoBehaviour
     public void OnClickShop()
     {
         GameManager.Instance.UI.OpenShop();
+    }
+
+    public void OnClickSetting()
+    {
+        ClickEffectObject(SettingButtonEffect, 3);
     }
 }

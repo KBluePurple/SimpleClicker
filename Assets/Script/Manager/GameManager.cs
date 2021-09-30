@@ -61,7 +61,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     public GameObject InstantiateObj(GameObject gameObject)
     {
-        return Instantiate(gameObject);
+        return Instantiate(gameObject, UI.UICanvas.transform);
     }
 
     public Vector3 TouchPoint()

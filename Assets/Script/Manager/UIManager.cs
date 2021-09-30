@@ -8,7 +8,7 @@ using UnityEngine.Experimental.Rendering.Universal;
 public class UIManager : MonoBehaviour
 {
     [SerializeField]
-    Canvas UICanvas = null;
+    public Canvas UICanvas = null;
 
     [SerializeField]
     RectTransform shopUI = null;
@@ -128,6 +128,7 @@ public class UIManager : MonoBehaviour
         sequence.Join(OrbitsRTF.DOLocalMove(Vector3.zero, .5f));
         sequence.AppendCallback(() => isShopOpened = true);
         GameManager.Instance.Tasks.Quit.AddTask(() => CloseShop());
+        GameManager.Instance.Shop.UpdateShopUI();
     }
 
     private void SetSubStarLight(bool value)
