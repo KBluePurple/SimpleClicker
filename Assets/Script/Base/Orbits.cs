@@ -39,10 +39,10 @@ public class Orbits
         }
     }
 
-    public int Speed
+    public float Speed
     {
         get {
-            return (int)(BaseSpeed * (1 + (0.2 * SpeedUpgrade)));
+            return (float)(BaseSpeed * (1f + (0.2f * SpeedUpgrade)));
         }
     }
 }
