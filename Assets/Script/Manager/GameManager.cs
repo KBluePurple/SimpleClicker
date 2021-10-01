@@ -99,4 +99,9 @@ public class GameManager : MonoSingleton<GameManager>
             Popup.Show("정말 떠나실 건가요...?", "떠나신다면 막지는 않겠지만 정말 마음이 아플 것 같네요...\n\n하지만 뭐 어쩌겠나요 떠나신다는데...\n\n전 당신의 선택을 존중해요...!", button1, button2);
         }
     }
+
+    void OnApplicationQuit()
+    {
+        Data.SaveData();
+    }
 }

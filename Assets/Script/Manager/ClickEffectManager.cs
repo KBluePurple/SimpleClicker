@@ -18,6 +18,18 @@ public class ClickEffectManager : MonoBehaviour
     [SerializeField]
     Transform SettingButtonEffect = null;
 
+    [SerializeField]
+    Transform VibrationButtonEffect = null;
+
+    [SerializeField]
+    Transform FastButtonEffect = null;
+
+    [SerializeField]
+    public Text VibrationButtonEffectText = null;
+
+    [SerializeField]
+    public Text FastButtonEffectText = null;
+
     PoolManager clickEffectPool = null;
 
     private void Start()
@@ -77,5 +89,39 @@ public class ClickEffectManager : MonoBehaviour
     {
         ClickEffectObject(SettingButtonEffect, 1);
         GameManager.Instance.Setting.OpenSetting();
+    }
+
+    public void OnClickVibration()
+    {
+        ClickEffectObject(VibrationButtonEffect, 3);
+
+        if (GameManager.Instance.Setting.Settings.Vibration)
+        {
+            VibrationButtonEffectText.text = "진동 켜기";
+            GameManager.Instance.Setting.Settings.Vibration = false;
+        }
+        else
+        {
+            VibrationButtonEffectText.text = "진동 끄기";
+            GameManager.Instance.Setting.Settings.Vibration = true;
+        }
+    }
+
+    public void OnClickFast()
+    {
+        ClickEffectObject(FastButtonEffect, 3);
+
+        if (GameManager.Instance.Setting.Settings.FastMode)
+        {
+            FastButtonEffectText.text = "최적화 모드 켜기";
+            GameManager.Instance.Setting.Settings.FastMode = false;
+        }
+        else
+        {
+            FastButtonEffectText.text = "최적화 모드 끄기";
+            GameManager.Instance.Setting.Settings.FastMode = true;
+        }
+
+        GameManager.Instance.Setting.FastMode(GameManager.Instance.Setting.Settings.FastMode);
     }
 }

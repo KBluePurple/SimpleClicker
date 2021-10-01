@@ -13,7 +13,7 @@ public class StarManager : MonoBehaviour
 
     private int Count = 0;
 
-    private void Start() {
+    private void Awake() {
         foreach (var orbit in Orbits)
         {
             orbit.transform.Rotate(new Vector3(0, 0, Random.Range(0f, 360f)));
@@ -27,9 +27,10 @@ public class StarManager : MonoBehaviour
 
     public void AddOrbit(bool isNoAnimation = false)
     {
+        var Star = GameManager.Instance.UI.star;
         if (isNoAnimation)
         {
-            
+            Star.localScale = starScales[Count];
             Count++;
         }
         else
@@ -40,7 +41,6 @@ public class StarManager : MonoBehaviour
                 sequence.AppendInterval(.5f);
                 GameManager.Instance.UI.CloseShopButton();
             }
-            var Star = GameManager.Instance.UI.star;
             Orbits[Count].gameObject.SetActive(true);
             Orbits[Count].Enabled = true;
             sequence.Append(Orbits[Count].GetComponent<Image>().DOFade(1, 1).From(0));

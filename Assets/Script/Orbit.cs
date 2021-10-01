@@ -43,17 +43,19 @@ public class Orbit : MonoBehaviour
             var x1 = (Mathf.Cos(degree * Mathf.Deg2Rad) * r);
             var y1 = (Mathf.Sin(degree * Mathf.Deg2Rad) * r);
 
-            if (i == SubStars.Count - 1 && !GameManager.Instance.UI.isShopOpened)
+            if (i == SubStars.Count - 1)
             {
-                SubStars[i].DOAnchorPos(new Vector2(x1, y1), 3f).From(Vector2.zero);
                 var SubStarsLight = SubStars[i].GetComponent<Light2D>();
                 if (isNoAnimaion)
                 {
+                    SubStars[i].anchoredPosition = new Vector2(x1, y1);
                     SubStarsLight.intensity = .6f;
                 }
                 else
                 {
-                    DOTween.To(() => SubStarsLight.intensity, x => SubStarsLight.intensity = x, .6f, 3).From(0f);
+                    SubStars[i].DOAnchorPos(new Vector2(x1, y1), 3f).From(Vector2.zero);
+                    if (!GameManager.Instance.UI.isShopOpened)
+                        DOTween.To(() => SubStarsLight.intensity, x => SubStarsLight.intensity = x, .6f, 3).From(0f);
                 }
             }
             else

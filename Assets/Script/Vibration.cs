@@ -10,7 +10,7 @@ public static class Vibration
 #endif
     public static void Vibrate()
     {
-        if (!Settings.Vibration) return;
+        if (!GameManager.Instance.Setting.Settings.Vibration) return;
 #if UNITY_ANDROID && !UNITY_EDITOR
         AndroidVibrator.Call("vibrate");
 #else
@@ -20,7 +20,7 @@ public static class Vibration
 
     public static void Vibrate(long milliseconds)
     {
-        if (!Settings.Vibration) return;
+        if (!GameManager.Instance.Setting.Settings.Vibration) return;
 #if UNITY_ANDROID && !UNITY_EDITOR
         AndroidVibrator.Call("vibrate", milliseconds);
 #else
@@ -29,7 +29,7 @@ public static class Vibration
     }
     public static void Vibrate(long[] pattern, int repeat)
     {
-        if (!Settings.Vibration) return;
+        if (!GameManager.Instance.Setting.Settings.Vibration) return;
 #if UNITY_ANDROID && !UNITY_EDITOR
         AndroidVibrator.Call("vibrate", pattern, repeat);
 #else

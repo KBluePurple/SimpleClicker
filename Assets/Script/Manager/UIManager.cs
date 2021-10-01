@@ -107,7 +107,7 @@ public class UIManager : MonoBehaviour
         StarCanvas.renderMode = RenderMode.WorldSpace;
         OrbitCanvas.renderMode = RenderMode.WorldSpace;
     }
-    
+
     private bool isOpening = false;
     public void OpenShop()
     {
@@ -126,11 +126,13 @@ public class UIManager : MonoBehaviour
         sequence.Join(shopUI.DOAnchorPosY(0, .5f));
         sequence.Join(shopButton.DOFade(0, .25f));
         sequence.Join(starLine.DOFade(0, .25f));
+        sequence.Join(GameManager.Instance.Setting.audioMixer.DOSetFloat("MasterPitch", 0.8f, 0.5f));
         sequence2.AppendInterval(.75f);
         sequence2.Append(shopCanvasGroup.DOFade(1, .5f));
         sequence2.Join(shopOrbitText.DOFade(1, .5f));
         sequence.Join(OrbitsRTF.DOLocalMove(Vector3.zero, .5f));
-        sequence.AppendCallback(() => {
+        sequence.AppendCallback(() =>
+        {
             isShopOpened = true;
             isOpening = false;
         });
@@ -175,6 +177,7 @@ public class UIManager : MonoBehaviour
         isShopOpened = false;
         Sequence sequence = DOTween.Sequence();
         sequence.AppendCallback(() => SetSubStarLight(true));
+        sequence.Join(GameManager.Instance.Setting.audioMixer.DOSetFloat("MasterPitch", 1f, 0.5f));
         sequence.Join(shopUI.DOAnchorPosY(-UICanvas.GetComponent<RectTransform>().sizeDelta.y, .5f));
         sequence.Join(starImage.DOMove(Vector2.zero, .5f));
         sequence.Join(star.DOScale(originalScale, .5f));
@@ -221,7 +224,7 @@ public class UIManager : MonoBehaviour
     private IEnumerator StackTimerLoop()
     {
         if (isStackLooping) yield break;
-        while (timer <= 10)
+        while (timer <= 5)
         {
             timer++;
             yield return new WaitForSeconds(0.1f);
