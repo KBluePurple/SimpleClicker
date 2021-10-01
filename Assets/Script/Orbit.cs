@@ -43,7 +43,7 @@ public class Orbit : MonoBehaviour
             var x1 = (Mathf.Cos(degree * Mathf.Deg2Rad) * r);
             var y1 = (Mathf.Sin(degree * Mathf.Deg2Rad) * r);
 
-            if (i == SubStars.Count - 1)
+            if (i == SubStars.Count - 1 && !GameManager.Instance.UI.isShopOpened)
             {
                 SubStars[i].DOAnchorPos(new Vector2(x1, y1), 3f).From(Vector2.zero);
                 var SubStarsLight = SubStars[i].GetComponent<Light2D>();

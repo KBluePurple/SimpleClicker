@@ -76,5 +76,6 @@ public class ClickEffectManager : MonoBehaviour
     public void OnClickSetting()
     {
         ClickEffectObject(SettingButtonEffect, 1);
+        GameManager.Instance.Setting.OpenSetting();
     }
 }

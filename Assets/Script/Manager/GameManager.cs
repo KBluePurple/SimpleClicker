@@ -32,6 +32,12 @@ public class GameManager : MonoSingleton<GameManager>
     ClickEffectManager clickEffect = null;
     public ClickEffectManager ClickEffect { get { return clickEffect ??= GetComponent<ClickEffectManager>(); } }
 
+    SettingManager setting = null;
+    public SettingManager Setting { get { return setting ??= GetComponent<SettingManager>(); } }
+
+    SoundManager sound = null;
+    public SoundManager Sound { get { return sound ??= GetComponent<SoundManager>(); } }
+
     void Start()
     {
         DontDestroyOnLoad(gameObject);
@@ -41,7 +47,22 @@ public class GameManager : MonoSingleton<GameManager>
 
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            foreach (Orbit orbit in Star.Orbits)
+            {
+                if (orbit.Enabled)
+                    orbit.AddSubStar();
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            Star.AddOrbit();
+        }
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            UI.VibrateForTime(1f);
+        }
     }
 
     public GameObject InstantiateObj(GameObject gameObject)

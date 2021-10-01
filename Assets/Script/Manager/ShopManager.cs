@@ -140,22 +140,6 @@ public class ShopManager : MonoBehaviour
             sequence1.AppendCallback(() => descriptionText.text = "업그레이드 비용");
             sequence1.Join(items.GetComponent<CanvasGroup>().DOFade(1, 0));
         }
-        else
-        {
-            arrows[0].interactable = true;
-            arrows[1].interactable = false;
-            Sequence sequence1 = DOTween.Sequence();
-            sequence1.Join(arrows[0].GetComponent<CanvasGroup>().DOFade(1, .25f));
-            sequence1.Join(arrows[1].GetComponent<CanvasGroup>().DOFade(0, .25f));
-            sequence1.Join(items.GetComponent<CanvasGroup>().DOFade(0, .25f));
-
-            // TODO: 자물쇠 아이콘 표시
-
-            sequence1.AppendCallback(() => upgradeButton.GetChild(1).GetComponent<Text>().text = "LOCKED");
-            sequence1.AppendCallback(() => descriptionText.text = "잠금 해제 비용");
-
-            curItemIndex = 0;
-        }
 
         if (curOrbitIndex == 4)
         {

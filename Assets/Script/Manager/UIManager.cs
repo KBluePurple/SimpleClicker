@@ -107,9 +107,12 @@ public class UIManager : MonoBehaviour
         StarCanvas.renderMode = RenderMode.WorldSpace;
         OrbitCanvas.renderMode = RenderMode.WorldSpace;
     }
-
+    
+    private bool isOpening = false;
     public void OpenShop()
     {
+        if (isOpening) return;
+        isOpening = true;
         originalScale = star.localScale;
         GameManager.Instance.Shop.UpdateOrbitSelect();
         Sequence sequence = DOTween.Sequence();
@@ -127,7 +130,10 @@ public class UIManager : MonoBehaviour
         sequence2.Append(shopCanvasGroup.DOFade(1, .5f));
         sequence2.Join(shopOrbitText.DOFade(1, .5f));
         sequence.Join(OrbitsRTF.DOLocalMove(Vector3.zero, .5f));
-        sequence.AppendCallback(() => isShopOpened = true);
+        sequence.AppendCallback(() => {
+            isShopOpened = true;
+            isOpening = false;
+        });
         GameManager.Instance.Tasks.Quit.AddTask(() => CloseShop());
         GameManager.Instance.Shop.UpdateShopUI();
     }
@@ -244,6 +250,7 @@ public class UIManager : MonoBehaviour
         var RandomPos = EffectPos + (Random.insideUnitSphere * 0.5f);
         sequence.Append(EffectObject.transform.DOMove(RandomPos, .5f));
         sequence.Append(EffectObject.GetComponent<Image>().DOFade(0, .5f));
+        GameManager.Instance.Sound.PlaySoundEffect(SoundEffectType.Tick);
         if (!isDirect)
         {
             sequence.Join(EffectObject.transform.DOMove(MoneyStackText.transform.position, .5f));
