@@ -235,7 +235,7 @@ public class UIManager : MonoBehaviour
 
     public void GetMoneyEffect(int value, Vector3 startPos, bool isDirect = false)
     {
-        if (isShopOpened)
+        if (isShopOpened || GameManager.Instance.Setting.Settings.FastMode)
         {
             GameManager.Instance.Data.Player.StarEnergy += value;
             UpdateUI();
